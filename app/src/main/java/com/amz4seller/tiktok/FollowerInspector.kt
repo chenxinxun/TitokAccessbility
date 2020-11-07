@@ -3,8 +3,7 @@ package com.amz4seller.tiktok
 import android.text.TextUtils
 import android.view.accessibility.AccessibilityNodeInfo
 
-class FollowerInspector:Inspector, FollowAction {
-    var followNumber = 0
+class FollowerInspector:Inspector {
     private lateinit var actionFollow:AccessibilityNodeInfo
     override fun resolveLayout(node: AccessibilityNodeInfo) {
         if (node == null) {
@@ -16,7 +15,7 @@ class FollowerInspector:Inspector, FollowAction {
                 if(viewPageView.childCount > 1) {
                     val recyclerView = viewPageView.getChild(1)?:return
                     if(recyclerView.className == "androidx.recyclerview.widget.RecyclerView") {
-                        var currentSize = recyclerView.childCount
+                        val currentSize = recyclerView.childCount
                         if(currentSize > 0) {
                             val followerItem = recyclerView.getChild(0)?:return
                             if(followerItem.childCount>2){
@@ -33,8 +32,7 @@ class FollowerInspector:Inspector, FollowAction {
                                     }
                                 }
                             }
-
-                            followerItem.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                            InspectorUtils.doActionDelay(followerItem)
                         }
                     }
                 }
@@ -42,11 +40,4 @@ class FollowerInspector:Inspector, FollowAction {
         }
     }
 
-    override fun onFollow(name: String) {
-        if (::actionFollow.isInitialized){
-            if (followNumber >= InspectorSettings.followersNumbers){
-                actionFollow.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            }
-        }
-    }
 }
