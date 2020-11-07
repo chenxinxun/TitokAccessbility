@@ -3,10 +3,10 @@ package com.amz4seller.tiktok
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityNodeInfo
-import java.lang.Exception
+import kotlinx.coroutines.delay
 
 object InspectorUtils {
-    fun getNumberFromFormat(num:String):Int{
+    fun getNumberFromFormat(num:String):Int?{
         if(num.contains("M")){
             val number = num.subSequence(0, num.length-1).toString()
             return (number.toFloat() * 1000_000).toInt()
@@ -19,18 +19,23 @@ object InspectorUtils {
             val number = num.subSequence(0, num.length-1).toString()
             return (number.toFloat() * 1000_000_000).toInt()
         }
-        try {
-            return num.toInt()
+        return try {
+            num.toInt()
         } catch (e:NumberFormatException){
-            e.printStackTrace()
+            null
         }
-        return 0
     }
 
-    fun doActionDelay(node: AccessibilityNodeInfo){
+    fun doClickActionDelay(node: AccessibilityNodeInfo){
+    //    delay(InspectorSettings.delayAction)
+        Thread.sleep(InspectorSettings.delayAction)
+        node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+    }
+
+    fun doForwardActionDelay(node: AccessibilityNodeInfo){
         Handler(Looper.getMainLooper()).postDelayed({
-                node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            }, InspectorSettings.delayAction
+            node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+        }, InspectorSettings.delayAction
         )
     }
 }

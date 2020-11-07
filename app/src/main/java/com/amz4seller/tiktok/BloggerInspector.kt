@@ -3,12 +3,14 @@ package com.amz4seller.tiktok
 import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 
 class BloggerInspector:Inspector {
     private var blogger = Blogger()
     private var currentFollower = Blogger()
     private var isBlogger = true
-    private var followes = ArrayList<Blogger>()
+    var followes = ArrayList<Blogger>()
     private var TAG = "Tiktok log"
     override fun resolveLayout(node: AccessibilityNodeInfo) {
         if(node.childCount > 0) {
@@ -26,22 +28,25 @@ class BloggerInspector:Inspector {
 
             if(isBlogger) {
                 blogger.followerNumber = number
-                Log.d(TAG, "click ${blogger}")
-                if (!blogger.isDataWaitOk()){
-                    InspectorUtils.doActionDelay(followerLayout)
+                if (!blogger.isDataNeedWaitOk()){
+                    InspectorUtils.doClickActionDelay(followerLayout)
+                    Log.d(TAG, "click ${blogger}")
                 }
 
             } else {
                 currentFollower.followerNumber = number
-                followes.add(currentFollower)
-                Log.d(TAG, "follower - $currentFollower")
+                //TODO follow 延迟处理等待时间 后还没执行就被返回了 协程 kotlin sleep
                 if (number >= InspectorSettings.followersNumbers){
                     followAction(root)
                 }
 
                 if(backActionImage !=null){
-                    if (!currentFollower.isDataWaitOk()){
-                        InspectorUtils.doActionDelay(backActionImage)
+                    if (!currentFollower.isDataNeedWaitOk()){
+                        if(!followes.contains(currentFollower)){
+                            Log.d(TAG, "follower - $currentFollower")
+                            followes.add(currentFollower)
+                        }
+                        InspectorUtils.doClickActionDelay(backActionImage)
                         Log.d(TAG, "return to blogger followers list")
                     }
                 }
@@ -61,7 +66,7 @@ class BloggerInspector:Inspector {
                 val content = followActionVew.text?:""
                 if(!TextUtils.isEmpty(content) && content == "Follow"){
                     Log.d(TAG, "click follow")
-                    InspectorUtils.doActionDelay(followActionVew)
+                    InspectorUtils.doClickActionDelay(followActionVew)
                 }
             }
         }
@@ -124,10 +129,8 @@ class BloggerInspector:Inspector {
             val name = nameView.text.toString()
             if(isBlogger){
                 blogger.name = name
-                Log.d(TAG, "blogger - $blogger")
             } else {
                 currentFollower.name = name
-                Log.d(TAG, "follower - $currentFollower")
             }
         }
     }
@@ -143,10 +146,8 @@ class BloggerInspector:Inspector {
             val name = nameView.text.toString()
             if(isBlogger){
                 blogger.note = name
-                Log.d(TAG, "blogger - $blogger")
             } else {
                 currentFollower.note = name
-                Log.d(TAG, "follower - $currentFollower")
             }
         }
     }
@@ -155,8 +156,7 @@ class BloggerInspector:Inspector {
      * 解析粉丝数量
      */
     private fun resolveBloggerNumberView(container : AccessibilityNodeInfo):Int?{
-        var real = 0
-        Log.d(TAG, "resolve followers numbers")
+        var real:Int?= null
         if (container.childCount > 1){
             val followNumberView = container.getChild(0)?:return 0
             if(followNumberView.className == "android.widget.TextView") {
@@ -167,7 +167,6 @@ class BloggerInspector:Inspector {
                 real = InspectorUtils.getNumberFromFormat(followerNumber)
             }
         }
-        Log.d(TAG, "resolve followers - $real")
         return real
     }
 

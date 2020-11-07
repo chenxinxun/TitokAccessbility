@@ -1,17 +1,19 @@
 package com.amz4seller.tiktok
 
 import android.accessibilityservice.AccessibilityService
-import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED
-import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-import android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK
-import android.widget.TabHost
 
 class TiktokAccessbilityService: AccessibilityService() {
-    var blogger = BloggerInspector()
-    var follower = FollowerInspector()
+    private lateinit var blogger :BloggerInspector
+    private lateinit var followerList : FollowerListInspector
+
+    override fun onCreate() {
+        super.onCreate()
+        blogger = BloggerInspector()
+        followerList = FollowerListInspector()
+        followerList.blogger = blogger
+    }
 
     /**
      * TYPE_VIEW_CLICKED 1
@@ -35,8 +37,9 @@ class TiktokAccessbilityService: AccessibilityService() {
 
 
         val currentWindow = rootInActiveWindow?:return
+        //解析过滤
         blogger.resolveLayout(currentWindow)
-        follower.resolveLayout(currentWindow)
+        followerList.resolveLayout(currentWindow)
         currentWindow.recycle()
     }
 
