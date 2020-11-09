@@ -18,7 +18,8 @@
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
         </service>
-        <activity android:name="com.amz4seller.tiktok.MainActivity">
+        <activity android:name="com.amz4seller.tiktok.MainActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

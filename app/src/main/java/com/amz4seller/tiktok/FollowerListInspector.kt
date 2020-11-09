@@ -7,21 +7,25 @@ import android.view.accessibility.AccessibilityNodeInfo
 class FollowerListInspector:Inspector {
     lateinit var blogger : BloggerInspector
     private var TAG = "Tiktok log"
+    private var actionIndex = 0
     override fun resolveLayout(node: AccessibilityNodeInfo) {
         val viewPageView = inspectViewPager(node)?:return
         val recycleView = inspectRecycleView(viewPageView)?:return
         if( recycleView.childCount > 0) {
             if (::blogger.isInitialized){
-                val followerItem = recycleView.getChild(0)?:return
-                if(checkAlreadyAction(followerItem)){
-                    /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                      recycleView.performAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SHOW_ON_SCREEN.id)
-                    }*/
-                    InspectorUtils.doForwardActionDelay(recycleView)
-                    Log.d(TAG, "scroll forward")
+                val items = recycleView.childCount
+                if(actionIndex < items -1 && actionIndex < InspectorSettings.screenActionNum){
+                    val followerItem = recycleView.getChild(actionIndex)?:return
+                    if(!checkAlreadyAction(followerItem)){
+                        InspectorUtils.doClickActionDelay(followerItem)
+                    }
+                    actionIndex++
                 } else {
-                    InspectorUtils.doClickActionDelay(followerItem)
+                    InspectorUtils.doForwardActionDelay(recycleView)
+                    actionIndex = 0 // reInit
+                    Log.d(TAG, "scroll forward")
                 }
+
             }
         }
 

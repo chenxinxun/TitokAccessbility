@@ -1,25 +1,49 @@
 package com.amz4seller.tiktok
 
+import android.annotation.SuppressLint
+import android.os.CountDownTimer
 import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
+import androidx.core.content.ContextCompat
 
 class BloggerInspector:Inspector {
     private var blogger = Blogger()
     private var currentFollower = Blogger()
     private var isBlogger = true
+    private var backActionImage:AccessibilityNodeInfo?=null
+    //30s超时计算
+    private var mCountDownTimer = object : CountDownTimer(30000, 1000) {
+        @SuppressLint("SetTextI18n")
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+            if (currentFollower.isDataNeedWaitOk()){
+                if(backActionImage!=null){
+                    InspectorUtils.doClickActionDelay(backActionImage!!)
+                }
+            }
+        }
+    }
+
+
+
     var followes = ArrayList<Blogger>()
     private var TAG = "Tiktok log"
     override fun resolveLayout(node: AccessibilityNodeInfo) {
         if(node.childCount > 0) {
+            mCountDownTimer.start()
             val root = node.getChild(0)?:return
             //必须先执行 有利于判断是 blogger or follower
-            val backActionImage = resolveNoteAndBack(root)
-            val followerLayout = resolveFollowersLayout(root)?:return
-            val number = resolveBloggerNumberView(followerLayout) ?: return
-
+            backActionImage = resolveNoteAndBack(root)
+            val followerLayout = resolveFollowersLayout(root, "Followers")?:return
+            val followingLayout = resolveFollowersLayout(root, "Following")?:return
+            val likeLayout = resolveFollowersLayout(root, "Like")?:return
+            val followerNumber = resolveBloggerNumberView(followerLayout) ?: return
+            val followingNumber =  resolveBloggerNumberView(followingLayout) ?: return
+            val likeNumber =  resolveBloggerNumberView(likeLayout) ?: return
             /*if(followes.size == 0) {
                blogger.followerNumber = number
                Log.d(TAG, "click ${blogger}")
@@ -27,16 +51,20 @@ class BloggerInspector:Inspector {
            }*/
 
             if(isBlogger) {
-                blogger.followerNumber = number
+                blogger.followerNumber = followerNumber
+                blogger.followingNumber = followingNumber
+                blogger.likeNumber = likeNumber
                 if (!blogger.isDataNeedWaitOk()){
                     InspectorUtils.doClickActionDelay(followerLayout)
                     Log.d(TAG, "click ${blogger}")
                 }
 
             } else {
-                currentFollower.followerNumber = number
+                currentFollower.followerNumber = followerNumber
+                currentFollower.followingNumber = followingNumber
+                currentFollower.likeNumber = likeNumber
                 //TODO follow 延迟处理等待时间 后还没执行就被返回了 协程 kotlin sleep
-                if (number >= InspectorSettings.followersNumbers){
+                if (currentFollower.isFollowIsMatch()){
                     followAction(root)
                 }
 
@@ -46,7 +74,8 @@ class BloggerInspector:Inspector {
                             Log.d(TAG, "follower - $currentFollower")
                             followes.add(currentFollower)
                         }
-                        InspectorUtils.doClickActionDelay(backActionImage)
+                        InspectorUtils.doClickActionDelay(backActionImage!!)
+                        mCountDownTimer.cancel()
                         Log.d(TAG, "return to blogger followers list")
                     }
                 }
@@ -173,8 +202,8 @@ class BloggerInspector:Inspector {
     /**
      * 解析粉丝操作模块区域
      */
-    private fun resolveFollowersLayout(node: AccessibilityNodeInfo) : AccessibilityNodeInfo? {
-        val nodes = node.findAccessibilityNodeInfosByText("Followers")?:return null
+    private fun resolveFollowersLayout(node: AccessibilityNodeInfo, name:String) : AccessibilityNodeInfo? {
+        val nodes = node.findAccessibilityNodeInfosByText(name)?:return null
         var actionView: AccessibilityNodeInfo?
         nodes.forEach {
             val content = it.text?:""

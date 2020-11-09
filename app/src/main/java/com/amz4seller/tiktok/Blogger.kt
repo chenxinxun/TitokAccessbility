@@ -7,9 +7,18 @@ class Blogger {
     var name:String ?=null
     var note:String ?=null
     var followerNumber:Int? = null
+    var followingNumber:Int? = null
+    var likeNumber :Int? = null
+
+    fun isFollowIsMatch():Boolean{
+        if(followingNumber == null || followerNumber == null || likeNumber == null) {
+            return false
+        }
+        return followerNumber!! >= InspectorSettings.followersNumbers && followingNumber!! >= InspectorSettings.followingNumbers && likeNumber!! >= InspectorSettings.likeNumber
+    }
 
     fun isDataNeedWaitOk():Boolean{
-        return TextUtils.isEmpty(name) || TextUtils.isEmpty(note) ||  followerNumber == null || name == "@"
+        return TextUtils.isEmpty(name) || TextUtils.isEmpty(note) ||  followerNumber == null || name == "@" || followingNumber == null || likeNumber == null
     }
 
     override fun toString(): String {
@@ -24,13 +33,14 @@ class Blogger {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null || name == null || note == null || followerNumber == null) {
+        if (other == null || name == null || note == null || followerNumber == null || followingNumber == null || likeNumber == null) {
             return false
         }
         other as Blogger
-        if (other.name == null || other.note == null || other.followerNumber == null) {
+        if (other.name == null || other.note == null || other.followerNumber == null || followingNumber == null || likeNumber == null) {
             return false
         }
-        return other.name == name && other.note == note && followerNumber == other.followerNumber
+        return other.name == name && other.note == note && followerNumber == other.followerNumber && likeNumber == other.likeNumber && followingNumber == other.followingNumber
     }
+
 }

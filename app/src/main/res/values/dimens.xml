@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="min_width">100dp</dimen>
+    <dimen name="common_left">16sp</dimen>
+    <dimen name="common_padding">8dp</dimen>
+    <dimen name="common_top">12dp</dimen>
+</resources>
