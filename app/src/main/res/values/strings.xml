@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TiktokAccessbility</string>
+    <string name="app_name">Tiktok辅助</string>
     <string name="accessibility_service_description">Tiktok accessbility service</string>
     <string name="accessibility_service_label">Tiktok acessbility service</string>
 </resources>
