@@ -3,6 +3,7 @@ package com.amz4seller.tiktok
 import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityEvent.*
 
 class TiktokAccessbilityService: AccessibilityService() {
     private lateinit var blogger :BloggerInspector
@@ -22,7 +23,7 @@ class TiktokAccessbilityService: AccessibilityService() {
      * TYPE_VIEW_SCROLLED 4096
      */
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Log.d("Event type", event?.eventType.toString())
+        Log.d("Event type", getTypeName(event?.eventType?:0))
         if(event?.eventType ==  AccessibilityEvent.TYPE_VIEW_CLICKED
             //|| event?.eventType == TYPE_WINDOW_STATE_CHANGED
            // ||  event?.eventType ==  AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
@@ -43,6 +44,16 @@ class TiktokAccessbilityService: AccessibilityService() {
         currentWindow.recycle()
     }
 
+    private fun getTypeName(type:Int):String{
+        return when(type) {
+            TYPE_VIEW_CLICKED->"click"
+            TYPE_VIEW_SELECTED -> "view selected"
+            TYPE_WINDOW_STATE_CHANGED -> "window state changed"
+            TYPE_WINDOW_CONTENT_CHANGED -> "window content changed"
+            TYPE_VIEW_SCROLLED-> "view scrolled"
+            else -> type.toString()
+        }
+    }
     override fun onInterrupt() {
     }
 }

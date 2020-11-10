@@ -14,7 +14,7 @@ class FollowerListInspector:Inspector {
         if( recycleView.childCount > 0) {
             if (::blogger.isInitialized){
                 val items = recycleView.childCount
-                if(actionIndex < items -1 && actionIndex < InspectorSettings.screenActionNum){
+                if(actionIndex <= items -1 && actionIndex < InspectorSettings.screenActionNum){
                     val followerItem = recycleView.getChild(actionIndex)?:return
                     if(!checkAlreadyAction(followerItem)){
                         InspectorUtils.doClickActionDelay(followerItem)

@@ -1,9 +1,6 @@
 package com.amz4seller.tiktok
 
-import android.os.Handler
-import android.os.Looper
 import android.view.accessibility.AccessibilityNodeInfo
-import kotlinx.coroutines.delay
 
 object InspectorUtils {
     fun getNumberFromFormat(num:String):Int?{
@@ -27,15 +24,16 @@ object InspectorUtils {
     }
 
     fun doClickActionDelay(node: AccessibilityNodeInfo){
-    //    delay(InspectorSettings.delayAction)
+        //阻塞 主ui线程
         Thread.sleep(InspectorSettings.delayAction)
         node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        Thread.sleep(1000L)
     }
 
     fun doForwardActionDelay(node: AccessibilityNodeInfo){
-        Handler(Looper.getMainLooper()).postDelayed({
-            node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-        }, InspectorSettings.delayAction
-        )
+        //阻塞 主ui线程
+        Thread.sleep(InspectorSettings.delayAction)
+        node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+        Thread.sleep(1000L)
     }
 }

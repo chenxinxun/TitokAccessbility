@@ -69,6 +69,7 @@ class BloggerInspector:Inspector {
                 }
 
                 if(backActionImage !=null){
+                    //TODO 每次进去都是无效判断只有第一次有效？
                     if (!currentFollower.isDataNeedWaitOk()){
                         if(!followes.contains(currentFollower)){
                             Log.d(TAG, "follower - $currentFollower")
