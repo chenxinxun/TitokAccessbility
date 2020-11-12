@@ -75,7 +75,7 @@ class BloggerInspector:Inspector {
                             Log.d(TAG, "follower - $currentFollower")
                             followes.add(currentFollower)
                         }
-                        InspectorUtils.doClickActionDelay(backActionImage!!)
+                        InspectorUtils.doClickActionDelayByTime(backActionImage!!, 1000L)
                         mCountDownTimer.cancel()
                         Log.d(TAG, "return to blogger followers list")
                     }

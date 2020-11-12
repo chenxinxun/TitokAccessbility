@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/common_left"
-        android:text="关注人数达到 "/>
+        android:text="Following人数不超过 "/>
     <EditText
         android:id="@+id/following_num"
         android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
 
         app:layout_constraintTop_toTopOf="@+id/following_num"
         app:layout_constraintBottom_toBottomOf="@+id/following_num"
-        app:layout_constraintStart_toEndOf="@+id/delay"
+        app:layout_constraintStart_toEndOf="@+id/following_num"
         android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/common_left"
-        android:text="粉丝人数达到 "/>
+        android:text="Followers超过 "/>
     <EditText
         android:id="@+id/follower_num"
         android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/common_left"
-        android:text="点赞数量 "/>
+        android:text="Likes数量超过 "/>
     <EditText
         android:id="@+id/like_num"
         android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
         android:layout_marginStart="8dp"
         android:inputType="number"
         android:padding="@dimen/common_padding"
-        app:layout_constraintStart_toEndOf="@+id/following_title"
+        app:layout_constraintStart_toEndOf="@+id/like_title"
         app:layout_constraintTop_toBottomOf="@+id/follower_num"
         android:layout_marginTop="@dimen/common_left"
         />
@@ -161,7 +161,7 @@
 
         app:layout_constraintTop_toTopOf="@+id/like_num"
         app:layout_constraintBottom_toBottomOf="@+id/like_num"
-        app:layout_constraintStart_toEndOf="@+id/delay"
+        app:layout_constraintStart_toEndOf="@+id/like_num"
         android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

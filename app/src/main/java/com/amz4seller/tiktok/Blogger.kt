@@ -14,7 +14,7 @@ class Blogger {
         if(followingNumber == null || followerNumber == null || likeNumber == null) {
             return false
         }
-        return followerNumber!! >= InspectorSettings.followersNumbers && followingNumber!! >= InspectorSettings.followingNumbers && likeNumber!! >= InspectorSettings.likeNumber
+        return followerNumber!! >= InspectorSettings.followersNumbers && followingNumber!! <= InspectorSettings.followingNumbers && likeNumber!! >= InspectorSettings.likeNumber
     }
 
     fun isDataNeedWaitOk():Boolean{
@@ -41,6 +41,15 @@ class Blogger {
             return false
         }
         return other.name == name && other.note == note && followerNumber == other.followerNumber && likeNumber == other.likeNumber && followingNumber == other.followingNumber
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (note?.hashCode() ?: 0)
+        result = 31 * result + (followerNumber ?: 0)
+        result = 31 * result + (followingNumber ?: 0)
+        result = 31 * result + (likeNumber ?: 0)
+        return result
     }
 
 }
