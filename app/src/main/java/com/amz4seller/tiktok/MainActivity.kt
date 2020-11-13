@@ -21,10 +21,12 @@ class MainActivity : AppCompatActivity() {
         following_num.setText(InspectorSettings.followersNumbers.toString())
         like_num.setText(InspectorSettings.likeNumber.toString())
         action_number.setText(InspectorSettings.screenActionNum.toString())
+        action_minute.setText(InspectorSettings.minuteLimit.toString())
         action_save.setOnClickListener {
             val followNum = follower_num.text?.trim().toString()
             val followingNum = following_num.text?.trim().toString()
             val actionNumber = action_number.text?.trim().toString()
+            val actionMinute = action_minute.text?.trim().toString()
             val likeNumber = like_num.text?.trim().toString()
             val delayTime = delay.text?.trim().toString()
             if(!TextUtils.isEmpty(actionNumber)){
@@ -61,6 +63,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 InspectorSettings.screenActionNum = actionNumber.toIntOrNull()?:InspectorSettings.defaultScreenActionNum
             }
+
+            if(TextUtils.isEmpty(actionMinute)){
+                action_minute.setText(InspectorSettings.defaultMinuteLimit.toString())
+                InspectorSettings.minuteLimit = InspectorSettings.defaultMinuteLimit
+            } else {
+                InspectorSettings.minuteLimit = actionMinute.toIntOrNull()?:InspectorSettings.defaultMinuteLimit
+            }
+
 
             if(TextUtils.isEmpty(delayTime)){
                 InspectorSettings.delayAction = InspectorSettings.defaultDelayAction

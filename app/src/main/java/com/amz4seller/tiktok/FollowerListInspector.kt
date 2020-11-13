@@ -49,7 +49,7 @@ class FollowerListInspector:Inspector {
     }
 
     private fun inspectViewPager(node: AccessibilityNodeInfo):AccessibilityNodeInfo?{
-        if(node.childCount > 2) {
+        if(node.childCount > 3) {
             val viewPageView = node.getChild(3) ?: return null
             if (viewPageView.className == "androidx.viewpager.widget.ViewPager") {
                 return viewPageView

@@ -2,16 +2,21 @@ package com.amz4seller.tiktok
 
 import android.annotation.SuppressLint
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.core.content.ContextCompat
+import java.util.concurrent.atomic.AtomicInteger
 
 class BloggerInspector:Inspector {
     private var blogger = Blogger()
     private var currentFollower = Blogger()
     private var isBlogger = true
     private var backActionImage:AccessibilityNodeInfo?=null
+    private var followCount : AtomicInteger = AtomicInteger(0)
+    private var overflowSleep = true
+    private var lastTime = System.currentTimeMillis()
     //30s超时计算
     private var mCountDownTimer = object : CountDownTimer(30000, 1000) {
         @SuppressLint("SetTextI18n")
@@ -28,11 +33,40 @@ class BloggerInspector:Inspector {
         }
     }
 
+    fun reset(){
+        if(overflowSleep){
+            overflowSleep = false
+            if (followCount.get() != 0){
+                Thread.sleep(30 * 1000L)
+                lastTime = System.currentTimeMillis()
+                followCount.set(0)
+            }
+
+        }
+    }
+    //协程 关键字suspend 后台任务挂起
+    suspend fun startWatchDog(){
+        while(true){
+            if (System.currentTimeMillis() - lastTime >= 60 * 1000L) {
+                lastTime = System.currentTimeMillis()
+                followCount.set(0)
+            } else {
+                if(followCount.get() >= InspectorSettings.minuteLimit){
+                    Log.d(TAG, "over flow")
+                    overflowSleep = true
+                }
+            }
+        }
+    }
+
+
+
 
 
     var followes = ArrayList<Blogger>()
     private var TAG = "Tiktok log"
     override fun resolveLayout(node: AccessibilityNodeInfo) {
+        reset()
         if(node.childCount > 0) {
             mCountDownTimer.start()
             val root = node.getChild(0)?:return
@@ -96,6 +130,7 @@ class BloggerInspector:Inspector {
                 val content = followActionVew.text?:""
                 if(!TextUtils.isEmpty(content) && content == "Follow"){
                     Log.d(TAG, "click follow")
+                    followCount.incrementAndGet()
                     InspectorUtils.doClickActionDelay(followActionVew)
                 }
             }

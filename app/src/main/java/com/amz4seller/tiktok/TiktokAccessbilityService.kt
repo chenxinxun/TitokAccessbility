@@ -4,14 +4,23 @@ import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityEvent.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TiktokAccessbilityService: AccessibilityService() {
     private lateinit var blogger :BloggerInspector
     private lateinit var followerList : FollowerListInspector
+    //协程作用 Default 为新
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
         blogger = BloggerInspector()
+        scope.launch {
+            blogger.startWatchDog()
+        }
+
         followerList = FollowerListInspector()
         followerList.blogger = blogger
     }

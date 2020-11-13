@@ -200,12 +200,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="个"/>
+
+    <TextView
+        android:id="@+id/action_minute_h"
+        app:layout_constraintTop_toTopOf="@+id/action_minute"
+        app:layout_constraintBottom_toBottomOf="@+id/action_minute"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/common_left"
+        android:text="一分钟内关注不超过 "/>
+    <EditText
+        android:id="@+id/action_minute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/min_width"
+        android:layout_marginStart="8dp"
+        android:textSize="@dimen/common_left"
+        android:background="@drawable/bg_input"
+        android:inputType="number"
+        android:padding="@dimen/common_padding"
+        app:layout_constraintStart_toEndOf="@+id/action_minute_h"
+        app:layout_constraintTop_toBottomOf="@+id/action_number"
+        android:layout_marginTop="@dimen/common_left"
+        />
+    <TextView
+        app:layout_constraintTop_toTopOf="@+id/action_minute"
+        app:layout_constraintBottom_toBottomOf="@+id/action_minute"
+        app:layout_constraintStart_toEndOf="@+id/action_minute"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="个"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/action_save"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/common_left"
-        app:layout_constraintTop_toBottomOf="@+id/action_number"
+        app:layout_constraintTop_toBottomOf="@+id/action_minute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="保存配置"/>
