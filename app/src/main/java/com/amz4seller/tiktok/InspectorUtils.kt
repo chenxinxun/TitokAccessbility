@@ -1,8 +1,11 @@
 package com.amz4seller.tiktok
 
 import android.view.accessibility.AccessibilityNodeInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 object InspectorUtils {
+
     fun getNumberFromFormat(num:String):Int?{
         if(num.contains("M")){
             val number = num.subSequence(0, num.length-1).toString()

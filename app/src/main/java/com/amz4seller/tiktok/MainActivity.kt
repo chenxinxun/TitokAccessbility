@@ -1,17 +1,31 @@
 package com.amz4seller.tiktok
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.JobIntentService.enqueueWork
+import androidx.core.content.ContextCompat
+import com.amz4seller.tiktok.utils.LogEx
+import com.amz4seller.tiktok.utils.VideoUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        LogEx.watchVideoVisible = true
+        checkReadWritePermission()
+
         service_switch.setOnCheckedChangeListener { _, isChecked ->
             InspectorSettings.isServiceOn = isChecked
+        }
+
+        service_upload.setOnCheckedChangeListener { _, isChecked ->
+            InspectorSettings.isUpload = isChecked
         }
 
         service_switch.isChecked = InspectorSettings.isServiceOn
@@ -80,6 +94,29 @@ class MainActivity : AppCompatActivity() {
                 InspectorSettings.delayAction = time
             }
             Toast.makeText(this, "不配置将使用默认值", Toast.LENGTH_SHORT).show()
+        }
+
+        //TODO 从服务端轮询查询是否有新的视频需要上传，上传时传入url
+        //DownloadService.enqueueWork(this, Intent().apply {})
+    }
+
+
+    private fun checkReadWritePermission(){
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    1002
+                )
+
+            }
         }
     }
 }

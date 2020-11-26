@@ -1,6 +1,12 @@
 package com.amz4seller.tiktok
 
 object InspectorSettings {
+    var SPLASH_ACTIVITY = "com.ss.android.ugc.aweme.splash.SplashActivity"
+    var RECORD_NEW_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.ui.VideoRecordNewActivity"
+    var MV_CHOOSE_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.mvtemplate.choosemedia.MvChoosePhotoActivity"
+    var VIDEO_EDIT_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.cut.VECutVideoActivity"
+    var VIDEO_PUBLISH_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.edit.VEVideoPublishEditActivity"
+
     var defaultFollowersNumbers = 100
     //粉丝人数基准
     var followersNumbers = 100
@@ -20,6 +26,8 @@ object InspectorSettings {
     var followerLimit = 100
     //服务启动开关
     var isServiceOn = false
+    var isUpload = false
+
     //延时操作
     var defaultDelayAction = 2000L
     var delayAction = 2000L
