@@ -85,6 +85,7 @@ class MvChoosePhotoInspector: AbstractInspector() {
                     val check = videoItem.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/azm")?:return
                     if(videoItem.childCount > 1){
                         if(!actionRecord.selectVideo){
+                            InspectorSettings.homeState.set(false)
                             actionRecord.selectVideo = true
                             InspectorUtils.doClickActionDelayUpload(check[0])
                         }

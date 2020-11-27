@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SplashInspector: AbstractInspector() {
-    private var workState :AtomicBoolean = AtomicBoolean(false)
     private var wakeUpAction :AtomicBoolean = AtomicBoolean(false)
     /**
      * 保持前台操作
@@ -29,7 +28,7 @@ class SplashInspector: AbstractInspector() {
     private var downLoadDisposable: Disposable =
         RxBus.listen(BusEvent.EventDownLoadFinish::class.java).subscribe {
             LogEx.d(LogEx.TAG_WATCH, "home page receive down load finish event")
-            workState.set(true)
+            InspectorSettings.homeState.set(true)
         }
 
     override fun resolveLayout(node: AccessibilityNodeInfo) {
@@ -54,10 +53,9 @@ class SplashInspector: AbstractInspector() {
         if(pushNodes.size > 0){
             /*上传一次后可能会持续一段时间， 等这个结束后再做后续操作*/
             val isPushNodes = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/ca0")
-            if((isPushNodes == null || isPushNodes.size == 0 ||  !isPushNodes[0].isVisibleToUser) && workState.get()) {
+            if((isPushNodes == null || isPushNodes.size == 0 ||  !isPushNodes[0].isVisibleToUser) &&  InspectorSettings.homeState.get()) {
                 LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
                 InspectorUtils.doClickActionDelayUpload(pushNodes[0])
-                workState.set(false)
             }
         }
     }

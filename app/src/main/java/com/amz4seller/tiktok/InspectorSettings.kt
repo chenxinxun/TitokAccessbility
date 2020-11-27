@@ -1,5 +1,7 @@
 package com.amz4seller.tiktok
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 object InspectorSettings {
     var SPLASH_ACTIVITY = "com.ss.android.ugc.aweme.splash.SplashActivity"
     var RECORD_NEW_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.ui.VideoRecordNewActivity"
@@ -35,6 +37,7 @@ object InspectorSettings {
     var defaultMinuteLimit = 30
     var minuteLimit =  30
 
+    var homeState : AtomicBoolean = AtomicBoolean(false)
     fun getDelaySecond():Int {
         return (delayAction / 1000).toInt()
     }
