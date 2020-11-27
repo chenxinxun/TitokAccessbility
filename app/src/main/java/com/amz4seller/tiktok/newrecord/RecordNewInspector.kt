@@ -5,14 +5,10 @@ import com.amz4seller.tiktok.InspectorSettings
 import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.AbstractInspector
 import com.amz4seller.tiktok.utils.LogEx
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class RecordNewInspector: AbstractInspector() {
-    private val actionScope = CoroutineScope(Dispatchers.Default)
     private var actionRecord= ActionRecord()
+
     private inner class ActionRecord{
         var uploadAction = false
         fun reset(){

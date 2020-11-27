@@ -1,8 +1,6 @@
 package com.amz4seller.tiktok
 
 import android.view.accessibility.AccessibilityNodeInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 object InspectorUtils {
 

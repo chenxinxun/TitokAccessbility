@@ -13,7 +13,6 @@ import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH
 import com.amz4seller.tiktok.utils.RxBus
-import io.reactivex.disposables.Disposable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,7 +29,6 @@ class DownloadService : JobIntentService() {
     private var service: ApiService
     private var retrofit: Retrofit
     private var uploadUrls = ArrayList<Int>()
-    private var uploadFinishDisposable: Disposable
     init {
         val okHttpClient = OkHttpClient.Builder()
         okHttpClient.connectTimeout(30, TimeUnit.SECONDS)
@@ -46,15 +44,11 @@ class DownloadService : JobIntentService() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         service = retrofit.create(ApiService::class.java)
-
-        uploadFinishDisposable =  RxBus.listen(BusEvent.EventPushFinish::class.java).subscribe {
-            downLoad()
-        }
     }
 
-    private fun downLoad(){
+    private fun downLoad(id: Int){
         if(uploadUrls.isNotEmpty()){
-            val url = baseUrl + "tiktok/download?videoId=${uploadUrls[0]}"
+            val url = baseUrl + "tiktok/download?videoId=${id}"
             LogEx.d(TAG_WATCH, "begin to down $url")
             handleActionDownLoad(url)
         }
@@ -91,14 +85,11 @@ class DownloadService : JobIntentService() {
             val bean = response.body()?:return
             //下载视频组，每次任务只下载一次
             if(bean.status == 1){
-                if (bean.content.size != 0 && uploadUrls.isEmpty()){
-                    bean.content.forEach { uploadUrls.add(it.id) }
-                    downLoad()
+                if (bean.content == null){
+                    //test manual 手动执行任务
+                    //downLoad(3)
                 } else {
-                    //TODO manual 手动执行任务
-                    uploadUrls.add(2)
-                    uploadUrls.add(3)
-                    downLoad()
+                    downLoad(bean.content!!.id)
                 }
             }
             Thread.sleep(1000L * 60 * 3)
@@ -148,6 +139,7 @@ class DownloadService : JobIntentService() {
 
                 }
                 contentValues.clear()
+                LogEx.d(TAG_WATCH, "down $url finish and send down load finish event")
                 RxBus.send(BusEvent.EventDownLoadFinish())
                // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
             } else {
@@ -157,8 +149,10 @@ class DownloadService : JobIntentService() {
 
         }catch (e: Exception){
             e.printStackTrace()
+            LogEx.d(TAG_WATCH, "down $url error")
         } finally {
             if(uploadUrls.isNotEmpty()){
+                LogEx.d(TAG_WATCH, "down task remove one")
                 uploadUrls.removeAt(0)
             }
 

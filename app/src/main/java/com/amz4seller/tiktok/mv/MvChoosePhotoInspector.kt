@@ -6,8 +6,6 @@ import com.amz4seller.tiktok.InspectorSettings.VIDEO_EDIT_ACTIVITY
 import com.amz4seller.tiktok.InspectorSettings.VIDEO_PUBLISH_ACTIVITY
 import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.AbstractInspector
-import com.amz4seller.tiktok.utils.BusEvent
-import com.amz4seller.tiktok.utils.RxBus
 
 class MvChoosePhotoInspector: AbstractInspector() {
     private inner class ActionRecord{
@@ -41,7 +39,6 @@ class MvChoosePhotoInspector: AbstractInspector() {
             if(!actionRecord.postVideo){
                 actionRecord.postVideo = true
                 InspectorUtils.doClickActionDelayUpload(postStep[0])
-                RxBus.send(BusEvent.EventPushFinish())
             }
         }
     }
