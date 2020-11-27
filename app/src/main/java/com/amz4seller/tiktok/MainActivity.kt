@@ -7,10 +7,8 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.JobIntentService.enqueueWork
 import androidx.core.content.ContextCompat
 import com.amz4seller.tiktok.utils.LogEx
-import com.amz4seller.tiktok.utils.VideoUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +20,9 @@ class MainActivity : AppCompatActivity() {
 
         service_switch.setOnCheckedChangeListener { _, isChecked ->
             InspectorSettings.isServiceOn = isChecked
+            if(isChecked){
+                DownloadService.enqueueWork(this, Intent())
+            }
         }
 
         service_upload.setOnCheckedChangeListener { _, isChecked ->
@@ -96,8 +97,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "不配置将使用默认值", Toast.LENGTH_SHORT).show()
         }
 
-        //TODO 从服务端轮询查询是否有新的视频需要上传，上传时传入url
-        //DownloadService.enqueueWork(this, Intent().apply {})
+
     }
 
 

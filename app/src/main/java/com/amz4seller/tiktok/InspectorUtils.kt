@@ -33,6 +33,13 @@ object InspectorUtils {
         Thread.sleep(1000L)
     }
 
+    fun doClickActionDelayUpload(node: AccessibilityNodeInfo){
+        //阻塞 主ui线程
+        Thread.sleep(3000L)
+        node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        Thread.sleep(1000L)
+    }
+
     fun doClickActionDelayByTime(node: AccessibilityNodeInfo, time:Long){
         //阻塞 主ui线程
         Thread.sleep(time)

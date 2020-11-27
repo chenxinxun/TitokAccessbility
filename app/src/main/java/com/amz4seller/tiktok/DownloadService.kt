@@ -6,25 +6,105 @@ import android.content.Intent
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.TextUtils
 import androidx.core.app.JobIntentService
-import java.io.*
-import java.lang.Exception
+import com.amz4seller.tiktok.base.ApiService
+import com.amz4seller.tiktok.utils.BusEvent
+import com.amz4seller.tiktok.utils.LogEx
+import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH
+import com.amz4seller.tiktok.utils.RxBus
+import io.reactivex.disposables.Disposable
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.BufferedInputStream
+import java.io.InputStream
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 
 class DownloadService : JobIntentService() {
+    var baseUrl = "http://10.12.1.58:8080/"
+    var id = ""
+    private var service: ApiService
+    private var retrofit: Retrofit
+    private var uploadUrls = ArrayList<Int>()
+    private var uploadFinishDisposable: Disposable
+    init {
+        val okHttpClient = OkHttpClient.Builder()
+        okHttpClient.connectTimeout(30, TimeUnit.SECONDS)
+        okHttpClient.readTimeout(30, TimeUnit.SECONDS)
+        okHttpClient.writeTimeout(30, TimeUnit.SECONDS)
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        okHttpClient.addInterceptor(logging)
+
+        retrofit = Retrofit.Builder()
+            .client(okHttpClient.build())
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        service = retrofit.create(ApiService::class.java)
+
+        uploadFinishDisposable =  RxBus.listen(BusEvent.EventPushFinish::class.java).subscribe {
+            downLoad()
+        }
+    }
+
+    private fun downLoad(){
+        if(uploadUrls.isNotEmpty()){
+            val url = baseUrl + "tiktok/download?videoId=${uploadUrls[0]}"
+            LogEx.d(TAG_WATCH, "begin to down $url")
+            handleActionDownLoad(url)
+        }
+    }
+
     companion object {
         private val jobId = 10001
 
         fun enqueueWork(context: Context, work: Intent) {
             enqueueWork(context, DownloadService::class.java, jobId, work)
         }
+
     }
 
 
     override fun onHandleWork(intent: Intent) {
-        val url = ""
-        handleActionDownLoad("https://txmov2.a.yximgs.com/upic/2020/11/03/19/BMjAyMDExMDMxOTE4MDhfMTgzNDA0NzM2N18zODY4ODA5Njk3NF8xXzM=_b_B3efe88acd04c1794dc9e296231259cd1.mp4?tag=1-1606388627-xpcwebfeatured-0-se9p87ek3f-0f39fd7dce8cdcb8&clientCacheKey=3xjnx6vw9sq33ii_b.mp4&tt=b&di=da68eb6c&bp=10004")
+        /**
+         *  warning
+         *  1.Android 8.1 开始需要配置 网络安全请求域名加入 如果是采用的内网ip地址 每次换ip需要重新将这个ip地址添加到配置 识别为白名单 通过清除改配只
+         *  2.内网局域网访问，如果当前本地机子有挂代理需要将代理不再代理这个网络
+         */
+
+
+        if(TextUtils.isEmpty(id)){
+            val result =  service.getIdentify()
+            val response = result.execute()
+            val body = response.body()?:return
+            id = body.content
+        }
+
+        while (true){
+            val result =  service.getPublishUrl(id)
+            val response = result.execute()
+            val bean = response.body()?:return
+            //下载视频组，每次任务只下载一次
+            if(bean.status == 1){
+                if (bean.content.size != 0 && uploadUrls.isEmpty()){
+                    bean.content.forEach { uploadUrls.add(it.id) }
+                    downLoad()
+                } else {
+                    //TODO manual 手动执行任务
+                    uploadUrls.add(2)
+                    uploadUrls.add(3)
+                    downLoad()
+                }
+            }
+            Thread.sleep(1000L * 60 * 3)
+
+        }
+
     }
 
     /**
@@ -68,13 +148,20 @@ class DownloadService : JobIntentService() {
 
                 }
                 contentValues.clear()
+                RxBus.send(BusEvent.EventDownLoadFinish())
                // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
             } else {
 
             }
 
-        }catch (e:Exception){
+
+        }catch (e: Exception){
             e.printStackTrace()
+        } finally {
+            if(uploadUrls.isNotEmpty()){
+                uploadUrls.removeAt(0)
+            }
+
         }
     }
 }

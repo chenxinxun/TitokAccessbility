@@ -6,16 +6,14 @@ import com.amz4seller.tiktok.InspectorSettings.VIDEO_EDIT_ACTIVITY
 import com.amz4seller.tiktok.InspectorSettings.VIDEO_PUBLISH_ACTIVITY
 import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.AbstractInspector
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.amz4seller.tiktok.utils.BusEvent
+import com.amz4seller.tiktok.utils.RxBus
 
 class MvChoosePhotoInspector: AbstractInspector() {
-    private val actionScope = CoroutineScope(Dispatchers.Default)
     private inner class ActionRecord{
         var selectVideo = false
         var editVideo = false
+        var firstNext = false
         var publishVideo = false
         var postVideo = false
         fun reset(){
@@ -23,6 +21,7 @@ class MvChoosePhotoInspector: AbstractInspector() {
             editVideo = false
             publishVideo = false
             postVideo = false
+            firstNext = false
         }
     }
 
@@ -39,10 +38,10 @@ class MvChoosePhotoInspector: AbstractInspector() {
     private fun resolvePost(node: AccessibilityNodeInfo){
         val postStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/cau")?:return
         if(postStep.size > 0){
-            actionScope.launch {
-                delay(3000L)
-                InspectorUtils.doClickActionDelay(postStep[0])
+            if(!actionRecord.postVideo){
                 actionRecord.postVideo = true
+                InspectorUtils.doClickActionDelayUpload(postStep[0])
+                RxBus.send(BusEvent.EventPushFinish())
             }
         }
     }
@@ -50,10 +49,9 @@ class MvChoosePhotoInspector: AbstractInspector() {
     private fun resolvePublish(node: AccessibilityNodeInfo){
         val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/bzx")?:return
         if(nextStep.size > 0){
-            actionScope.launch {
-                delay(3000L)
-                InspectorUtils.doClickActionDelay(nextStep[0])
+            if(!actionRecord.publishVideo){
                 actionRecord.publishVideo = true
+                InspectorUtils.doClickActionDelayUpload(nextStep[0])
             }
         }
     }
@@ -61,23 +59,22 @@ class MvChoosePhotoInspector: AbstractInspector() {
     private fun resolveVideoEdit(node: AccessibilityNodeInfo){
         val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/de5")?:return
         if(nextStep.size > 0){
-
-            actionScope.launch {
-                delay(3000L)
-                InspectorUtils.doClickActionDelay(nextStep[0])
+            if(!actionRecord.editVideo){
                 actionRecord.editVideo = true
+                InspectorUtils.doClickActionDelayUpload(nextStep[0])
             }
+
         }
     }
 
     private fun resolveNext(node: AccessibilityNodeInfo){
         val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/d32")?:return
         if(nextStep.size > 0){
-            actionScope.launch {
-                delay(3000L)
-                InspectorUtils.doClickActionDelay(nextStep[0])
-                actionRecord.selectVideo = true
+            if(!actionRecord.firstNext){
+                actionRecord.firstNext = true
+                InspectorUtils.doClickActionDelayUpload(nextStep[0])
             }
+
         }
     }
 
@@ -92,11 +89,9 @@ class MvChoosePhotoInspector: AbstractInspector() {
                     if(videoItem.childCount > 1){
                         if(!actionRecord.selectVideo){
                             actionRecord.selectVideo = true
-                            Thread.sleep(3000L)
-                            InspectorUtils.doClickActionDelay(check.get(0))
+                            InspectorUtils.doClickActionDelayUpload(check[0])
                         }
                     }
-
                 }
 
             }

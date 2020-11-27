@@ -1,9 +1,7 @@
 package com.amz4seller.tiktok
 
 import android.accessibilityservice.AccessibilityService
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityEvent.*
 import com.amz4seller.tiktok.mv.MvChoosePhotoInspector
 import com.amz4seller.tiktok.newrecord.RecordNewInspector
 import com.amz4seller.tiktok.splash.SplashInspector
@@ -43,18 +41,9 @@ class TiktokAccessbilityService: AccessibilityService() {
      * TYPE_VIEW_SCROLLED 4096
      */
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if(event?.eventType ==  AccessibilityEvent.TYPE_VIEW_CLICKED
-            //|| event?.eventType == TYPE_WINDOW_STATE_CHANGED
-           // ||  event?.eventType ==  AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-            //|| event?.eventType == TYPE_VIEW_SCROLLED
-        ){
-            return
-        }
-
         if(!InspectorSettings.isServiceOn){
             return
         }
-
 
         val currentWindow = rootInActiveWindow?:return
         if(InspectorSettings.isUpload){
@@ -77,16 +66,12 @@ class TiktokAccessbilityService: AccessibilityService() {
         currentWindow.recycle()
     }
 
-    private fun getTypeName(type:Int):String{
-        return when(type) {
-            TYPE_VIEW_CLICKED->"click"
-            TYPE_VIEW_SELECTED -> "view selected"
-            TYPE_WINDOW_STATE_CHANGED -> "window state changed"
-            TYPE_WINDOW_CONTENT_CHANGED -> "window content changed"
-            TYPE_VIEW_SCROLLED-> "view scrolled"
-            else -> type.toString()
-        }
-    }
+
     override fun onInterrupt() {
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        splashInspector.doRelease()
     }
 }
