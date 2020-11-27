@@ -28,7 +28,6 @@ class DownloadService : JobIntentService() {
     var id = ""
     private var service: ApiService
     private var retrofit: Retrofit
-    private var uploadUrls = ArrayList<Int>()
     init {
         val okHttpClient = OkHttpClient.Builder()
         okHttpClient.connectTimeout(30, TimeUnit.SECONDS)
@@ -47,11 +46,9 @@ class DownloadService : JobIntentService() {
     }
 
     private fun downLoad(id: Int){
-        if(uploadUrls.isNotEmpty()){
-            val url = baseUrl + "tiktok/download?videoId=${id}"
-            LogEx.d(TAG_WATCH, "begin to down $url")
-            handleActionDownLoad(url)
-        }
+        val url = baseUrl + "tiktok/download?videoId=${id}"
+        LogEx.d(TAG_WATCH, "begin to down $url")
+        handleActionDownLoad(url)
     }
 
     companion object {
@@ -151,11 +148,6 @@ class DownloadService : JobIntentService() {
             e.printStackTrace()
             LogEx.d(TAG_WATCH, "down $url error")
         } finally {
-            if(uploadUrls.isNotEmpty()){
-                LogEx.d(TAG_WATCH, "down task remove one")
-                uploadUrls.removeAt(0)
-            }
-
         }
     }
 }
