@@ -1,5 +1,6 @@
 package com.amz4seller.tiktok
 
+import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 
 object InspectorUtils {
@@ -51,4 +52,16 @@ object InspectorUtils {
         node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
         Thread.sleep(1000L)
     }
+
+    fun showAllElement(node: AccessibilityNodeInfo){
+        for (i in 0 until node.childCount){
+            val subNode = node.getChild(i)
+            if(subNode != null){
+                Log.d("Type", i.toString() +" parent["+ subNode.parent.className as String +"] current->"+subNode.className as String + " text:"+node.getChild(i).text + "isScrollable:"+node.isScrollable + " isClickable" + node.isClickable)
+                showAllElement(subNode)
+            }
+        }
+    }
+
+
 }

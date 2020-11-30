@@ -6,6 +6,7 @@ import com.amz4seller.tiktok.InspectorSettings.VIDEO_EDIT_ACTIVITY
 import com.amz4seller.tiktok.InspectorSettings.VIDEO_PUBLISH_ACTIVITY
 import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.AbstractInspector
+import com.amz4seller.tiktok.utils.LogEx
 
 class MvChoosePhotoInspector: AbstractInspector() {
     private inner class ActionRecord{
@@ -34,64 +35,103 @@ class MvChoosePhotoInspector: AbstractInspector() {
     }
 
     private fun resolvePost(node: AccessibilityNodeInfo){
-        val postStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/cau")?:return
-        if(postStep.size > 0){
-            if(!actionRecord.postVideo){
-                actionRecord.postVideo = true
-                InspectorUtils.doClickActionDelayUpload(postStep[0])
+
+        val postStep = node.findAccessibilityNodeInfosByText("Post")?:return
+        if(postStep.size > 1){
+            val post = postStep[1]?:return
+            LogEx.d(LogEx.TAG_WATCH, "post is clickable ${post.isClickable}")
+            if(post.isClickable){
+                if(!actionRecord.postVideo){
+                    actionRecord.postVideo = true
+                    InspectorUtils.doClickActionDelayUpload(post)
+                }
+            } else {
+                val parent = post.parent?:return
+                LogEx.d(LogEx.TAG_WATCH, "post parent is clickable ${parent.isClickable}")
+                if(parent.isClickable){
+                    if(!actionRecord.postVideo){
+                        actionRecord.postVideo = true
+                        InspectorUtils.doClickActionDelayUpload(parent)
+                    }
+                } else {
+                    val grandFather = parent.parent?:return
+                    InspectorUtils.showAllElement(grandFather)
+                    if(grandFather.isClickable){
+                        if(!actionRecord.postVideo){
+                            actionRecord.postVideo = true
+                            InspectorUtils.doClickActionDelayUpload(grandFather)
+                        }
+                    }
+                }
+
             }
+
+
         }
+
     }
 
     private fun resolvePublish(node: AccessibilityNodeInfo){
-        val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/bzx")?:return
+        val nextStep = node.findAccessibilityNodeInfosByText("Next")?:return
         if(nextStep.size > 0){
+            val next = nextStep[0]?:return
             if(!actionRecord.publishVideo){
                 actionRecord.publishVideo = true
-                InspectorUtils.doClickActionDelayUpload(nextStep[0])
+                InspectorUtils.doClickActionDelayUpload(next)
             }
         }
     }
 
     private fun resolveVideoEdit(node: AccessibilityNodeInfo){
-        val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/de5")?:return
+        val nextStep = node.findAccessibilityNodeInfosByText("Next")?:return
         if(nextStep.size > 0){
+            val next = nextStep[0]?:return
             if(!actionRecord.editVideo){
                 actionRecord.editVideo = true
-                InspectorUtils.doClickActionDelayUpload(nextStep[0])
+                InspectorUtils.doClickActionDelayUpload(next)
             }
-
         }
     }
 
     private fun resolveNext(node: AccessibilityNodeInfo){
-        val nextStep = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/d32")?:return
-        if(nextStep.size > 0){
+        val nextNodes = node.findAccessibilityNodeInfosByText("Next")?:return
+        if(nextNodes.size > 0){
+            val next  = nextNodes[0]?:return
             if(!actionRecord.firstNext){
                 actionRecord.firstNext = true
-                InspectorUtils.doClickActionDelayUpload(nextStep[0])
+                InspectorUtils.doClickActionDelayUpload(next)
             }
 
         }
     }
 
     private fun resolveSelectVideo(node: AccessibilityNodeInfo){
-        val videoRecyclerView = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/au1")?:return
-        if(videoRecyclerView.size > 0){
-            if(videoRecyclerView[0].childCount> 0){
-                val recyclerView = videoRecyclerView[0]?:return
-                if(recyclerView.childCount > 0){
-                    val videoItem = recyclerView.getChild(0)?:return
-                    val check = videoItem.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/azm")?:return
-                    if(videoItem.childCount > 1){
-                        if(!actionRecord.selectVideo){
-                            InspectorSettings.homeState.set(false)
-                            actionRecord.selectVideo = true
-                            InspectorUtils.doClickActionDelayUpload(check[0])
-                        }
-                    }
-                }
+        val video = node.findAccessibilityNodeInfosByText("Videos")?:return
+        if(video.size > 0){
+            if(video[0].text == "Videos"){
+                val videoParent = video[0].parent?:return
+                val videoParentParent = videoParent.parent?:return
+                InspectorUtils.showAllElement(videoParentParent)
+                if(videoParentParent.childCount > 4){
+                    val viewPager = videoParentParent.getChild(4)?:return
+                    if(viewPager.childCount > 0){
+                        val recyclerView = viewPager.getChild(0)?:return
+                        if(recyclerView.className == "androidx.recyclerview.widget.RecyclerView")
+                            if(recyclerView.childCount > 0){
+                                val videoItem = recyclerView.getChild(0)?:return
+                                if(videoItem.childCount>1){
+                                    val check = videoItem.getChild(0)?:return
+                                    if(!actionRecord.selectVideo){
+                                        InspectorSettings.homeState.set(false)
+                                        actionRecord.selectVideo = true
+                                        InspectorUtils.doClickActionDelayUpload(check)
+                                    }
+                                }
 
+                            }
+                    }
+
+                }
             }
 
         }

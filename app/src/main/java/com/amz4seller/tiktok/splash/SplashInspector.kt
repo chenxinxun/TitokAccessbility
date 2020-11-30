@@ -38,7 +38,7 @@ class SplashInspector: AbstractInspector() {
 
 
     private fun resolveHome(node: AccessibilityNodeInfo){
-        val homeNodes = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/bse")?:return
+        val homeNodes = node.findAccessibilityNodeInfosByText("Home")?:return
         if(homeNodes.size > 0){
             if(wakeUpAction.get()) {
                 InspectorUtils.doClickActionDelayUpload(homeNodes[0])
@@ -49,15 +49,25 @@ class SplashInspector: AbstractInspector() {
 
 
     private fun resolvePush(node: AccessibilityNodeInfo){
-        val pushNodes = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/bsc")?:return
-        if(pushNodes.size > 0){
-            /*上传一次后可能会持续一段时间， 等这个结束后再做后续操作*/
-            val isPushNodes = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/ca0")
-            if((isPushNodes == null || isPushNodes.size == 0 ||  !isPushNodes[0].isVisibleToUser) &&  InspectorSettings.homeState.get()) {
-                LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
-                InspectorUtils.doClickActionDelayUpload(pushNodes[0])
+
+        val pushingNodes = node.findAccessibilityNodeInfosByText("%")
+        val home  = node.findAccessibilityNodeInfosByText("Home")?:return
+        if(home.size > 0){
+            val tabHome = home[0]?:return
+            val tabItem = tabHome.parent?:return
+            val tabItemParent = tabItem.parent?:return
+            if(tabItemParent.childCount > 4){
+                val menu = tabItemParent.getChild(4)?:return
+                val pushing = pushingNodes != null &&  pushingNodes.size > 0
+                if((!pushing) &&  InspectorSettings.homeState.get()) {
+                    LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
+                    InspectorUtils.doClickActionDelayUpload(menu)
+                }
             }
+
         }
+
+
     }
 
     override fun matchActivity(activityName: String): Boolean {

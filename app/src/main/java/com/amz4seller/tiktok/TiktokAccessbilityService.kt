@@ -49,8 +49,9 @@ class TiktokAccessbilityService: AccessibilityService() {
         if(InspectorSettings.isUpload){
             LogEx.d(TAG_WATCH_DOG, "init upload mode")
             val name = event?.className.toString()
-            val pushNodes = currentWindow.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/bsc")
-            splashInspector.isMatchPage  = pushNodes != null
+            val homeNodes = currentWindow.findAccessibilityNodeInfosByText("Home")
+            val meNodes = currentWindow.findAccessibilityNodeInfosByText("Me")
+            splashInspector.isMatchPage = homeNodes != null && homeNodes.size > 0 && meNodes!=null && meNodes.size > 0
             if(splashInspector.isMatchPage){
                 splashInspector.resolveLayout(currentWindow)
             }

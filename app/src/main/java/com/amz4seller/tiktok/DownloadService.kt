@@ -67,29 +67,42 @@ class DownloadService : JobIntentService() {
          *  1.Android 8.1 开始需要配置 网络安全请求域名加入 如果是采用的内网ip地址 每次换ip需要重新将这个ip地址添加到配置 识别为白名单 通过清除改配只
          *  2.内网局域网访问，如果当前本地机子有挂代理需要将代理不再代理这个网络
          */
-
-
-        if(TextUtils.isEmpty(id)){
-            val result =  service.getIdentify()
-            val response = result.execute()
-            val body = response.body()?:return
-            id = body.content
+        try{
+            if(TextUtils.isEmpty(id)){
+                val result =  service.getIdentify()
+                val response = result.execute()
+                val body = response.body()?:return
+                id = body.content
+            }
+        } catch (e:Exception){
+            e.printStackTrace()
+            LogEx.d(TAG_WATCH, "begin get device id request error")
         }
 
+
+
         while (true){
-            val result =  service.getPublishUrl(id)
-            val response = result.execute()
-            val bean = response.body()?:return
-            //下载视频组，每次任务只下载一次
-            if(bean.status == 1){
-                if (bean.content == null){
-                    //test manual 手动执行任务
-                    //downLoad(3)
-                } else {
-                    downLoad(bean.content!!.id)
+            try{
+                if(TextUtils.isEmpty(id)){
+                    continue
                 }
+                val result =  service.getPublishUrl(id)
+                val response = result.execute()
+                val bean = response.body()?:return
+                //下载视频组，每次任务只下载一次
+                if(bean.status == 1){
+                    if (bean.content == null){
+                        //test manual 手动执行任务
+                        //downLoad(3)
+                    } else {
+                        downLoad(bean.content!!.id)
+                    }
+                }
+                Thread.sleep(1000L * 60 * 3)
+            }catch (e:Exception){
+                e.printStackTrace()
+                LogEx.d(TAG_WATCH, "get task message request error")
             }
-            Thread.sleep(1000L * 60 * 3)
 
         }
 

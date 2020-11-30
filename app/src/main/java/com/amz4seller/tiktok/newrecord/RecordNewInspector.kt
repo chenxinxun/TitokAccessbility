@@ -22,15 +22,19 @@ class RecordNewInspector: AbstractInspector() {
 
 
     private fun resolvePush(node: AccessibilityNodeInfo){
-        val uploads = node.findAccessibilityNodeInfosByViewId("com.zhiliaoapp.musically:id/sr")?:return
+        val uploads = node.findAccessibilityNodeInfosByText("Upload")?:return
         if(uploads.size > 0){
-            if(!actionRecord.uploadAction){
-                actionRecord.uploadAction = true
-                Thread.sleep(3000L)
-                LogEx.d(LogEx.TAG_WATCH, "in to record new")
-                InspectorUtils.doClickActionDelay(uploads[0])
+            val parent = uploads[0].parent?:return
+            if(parent.childCount> 0){
+                if(!actionRecord.uploadAction){
+                    actionRecord.uploadAction = true
+                    Thread.sleep(3000L)
+                    LogEx.d(LogEx.TAG_WATCH, "in to record new")
+                    InspectorUtils.doClickActionDelay(parent)
 
+                }
             }
+
         }
     }
 
