@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 
 class DownloadService : JobIntentService() {
-    var baseUrl = "http://10.12.1.58:8080/"
+    var baseUrl = "http://10.12.1.95:8080/"
     var id = ""
     private var service: ApiService
     private var retrofit: Retrofit
