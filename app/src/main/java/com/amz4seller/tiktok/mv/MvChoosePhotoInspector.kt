@@ -65,8 +65,6 @@ class MvChoosePhotoInspector: AbstractInspector() {
                 }
 
             }
-
-
         }
 
     }
@@ -74,66 +72,81 @@ class MvChoosePhotoInspector: AbstractInspector() {
     private fun resolvePublish(node: AccessibilityNodeInfo){
         val nextStep = node.findAccessibilityNodeInfosByText("Next")?:return
         if(nextStep.size > 0){
-            val next = nextStep[0]?:return
-            if(!actionRecord.publishVideo){
-                actionRecord.publishVideo = true
-                InspectorUtils.doClickActionDelayUpload(next)
+            for (i in 0 until nextStep.size) {
+                if (nextStep[i].text == "Next") {
+                    val next = nextStep[i]?:return
+                    if(!actionRecord.publishVideo){
+                        actionRecord.publishVideo = true
+                        InspectorUtils.doClickActionDelayUpload(next)
+                    }
+                }
             }
+
         }
     }
 
     private fun resolveVideoEdit(node: AccessibilityNodeInfo){
         val nextStep = node.findAccessibilityNodeInfosByText("Next")?:return
         if(nextStep.size > 0){
-            val next = nextStep[0]?:return
-            if(!actionRecord.editVideo){
-                actionRecord.editVideo = true
-                InspectorUtils.doClickActionDelayUpload(next)
+            for (i in 0 until nextStep.size) {
+                if (nextStep[i].text == "Next") {
+                    val next = nextStep[i]?:return
+                    if(!actionRecord.editVideo){
+                        actionRecord.editVideo = true
+                        InspectorUtils.doClickActionDelayUpload(next)
+                    }
+                }
             }
+
+
         }
     }
 
     private fun resolveNext(node: AccessibilityNodeInfo){
         val nextNodes = node.findAccessibilityNodeInfosByText("Next")?:return
         if(nextNodes.size > 0){
-            val next  = nextNodes[0]?:return
-            if(!actionRecord.firstNext){
-                actionRecord.firstNext = true
-                InspectorUtils.doClickActionDelayUpload(next)
+            for (i in 0 until nextNodes.size) {
+                if (nextNodes[i].text == "Next") {
+                    val next  = nextNodes[i]?:return
+                    if(!actionRecord.firstNext){
+                        actionRecord.firstNext = true
+                        InspectorUtils.doClickActionDelayUpload(next)
+                    }
+                }
             }
-
         }
     }
 
     private fun resolveSelectVideo(node: AccessibilityNodeInfo){
         val video = node.findAccessibilityNodeInfosByText("Videos")?:return
         if(video.size > 0){
-            if(video[0].text == "Videos"){
-                val videoParent = video[0].parent?:return
-                val videoParentParent = videoParent.parent?:return
-                InspectorUtils.showAllElement(videoParentParent)
-                if(videoParentParent.childCount > 4){
-                    val viewPager = videoParentParent.getChild(4)?:return
-                    if(viewPager.childCount > 0){
-                        val recyclerView = viewPager.getChild(0)?:return
-                        if(recyclerView.className == "androidx.recyclerview.widget.RecyclerView")
-                            if(recyclerView.childCount > 0){
-                                val videoItem = recyclerView.getChild(0)?:return
-                                if(videoItem.childCount>1){
-                                    val check = videoItem.getChild(0)?:return
-                                    if(!actionRecord.selectVideo){
-                                        InspectorSettings.homeState.set(false)
-                                        actionRecord.selectVideo = true
-                                        InspectorUtils.doClickActionDelayUpload(check)
+            for (i in 0 until video.size) {
+                if (video[i].text == "Videos") {
+                    val videoParent = video[i].parent?:return
+                    val videoParentParent = videoParent.parent?:return
+                    //InspectorUtils.showAllElement(videoParentParent)
+                    if(videoParentParent.childCount > 4){
+                        val viewPager = videoParentParent.getChild(4)?:return
+                        if(viewPager.childCount > 0){
+                            val recyclerView = viewPager.getChild(0)?:return
+                            if(recyclerView.className == "androidx.recyclerview.widget.RecyclerView")
+                                if(recyclerView.childCount > 0){
+                                    val videoItem = recyclerView.getChild(0)?:return
+                                    if(videoItem.childCount>1){
+                                        val check = videoItem.getChild(0)?:return
+                                        if(!actionRecord.selectVideo){
+                                            InspectorSettings.homeState.set(false)
+                                            actionRecord.selectVideo = true
+                                            InspectorUtils.doClickActionDelayUpload(check)
+                                        }
                                     }
+
                                 }
+                        }
 
-                            }
                     }
-
                 }
             }
-
         }
     }
 

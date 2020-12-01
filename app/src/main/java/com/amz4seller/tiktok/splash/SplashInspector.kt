@@ -40,9 +40,13 @@ class SplashInspector: AbstractInspector() {
     private fun resolveHome(node: AccessibilityNodeInfo){
         val homeNodes = node.findAccessibilityNodeInfosByText("Home")?:return
         if(homeNodes.size > 0){
-            if(wakeUpAction.get()) {
-                InspectorUtils.doClickActionDelayUpload(homeNodes[0])
-                wakeUpAction.set(false)
+            for (i in 0 until homeNodes.size) {
+                if (homeNodes[i].text == "Home") {
+                    if(wakeUpAction.get()) {
+                        InspectorUtils.doClickActionDelayUpload(homeNodes[i])
+                        wakeUpAction.set(false)
+                    }
+                }
             }
         }
     }
@@ -53,18 +57,22 @@ class SplashInspector: AbstractInspector() {
         val pushingNodes = node.findAccessibilityNodeInfosByText("%")
         val home  = node.findAccessibilityNodeInfosByText("Home")?:return
         if(home.size > 0){
-            val tabHome = home[0]?:return
-            val tabItem = tabHome.parent?:return
-            val tabItemParent = tabItem.parent?:return
-            if(tabItemParent.childCount > 4){
-                val menu = tabItemParent.getChild(4)?:return
-                val pushing = pushingNodes != null &&  pushingNodes.size > 0
-                if((!pushing) &&  InspectorSettings.homeState.get()) {
-                    LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
-                    InspectorUtils.doClickActionDelayUpload(menu)
+            for (i in 0 until home.size) {
+                if(home[i].text == "Home"){
+                    val tabHome = home[i]?:return
+                    val tabItem = tabHome.parent?:return
+                    val tabItemParent = tabItem.parent?:return
+                    InspectorUtils.showAllElement(tabItemParent)
+                    if(tabItemParent.childCount > 4){
+                        val menu = tabItemParent.getChild(4)?:return
+                        val pushing = pushingNodes != null &&  pushingNodes.size > 0
+                        if((!pushing) &&  InspectorSettings.homeState.get()) {
+                            LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
+                            InspectorUtils.doClickActionDelayUpload(menu)
+                        }
+                    }
                 }
             }
-
         }
 
 

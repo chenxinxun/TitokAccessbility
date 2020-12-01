@@ -24,17 +24,21 @@ class RecordNewInspector: AbstractInspector() {
     private fun resolvePush(node: AccessibilityNodeInfo){
         val uploads = node.findAccessibilityNodeInfosByText("Upload")?:return
         if(uploads.size > 0){
-            val parent = uploads[0].parent?:return
-            if(parent.childCount> 0){
-                if(!actionRecord.uploadAction){
-                    actionRecord.uploadAction = true
-                    Thread.sleep(3000L)
-                    LogEx.d(LogEx.TAG_WATCH, "in to record new")
-                    InspectorUtils.doClickActionDelay(parent)
+            for (i in 0 until uploads.size) {
+                if (uploads[i].text == "Upload") {
+                    val parent = uploads[i].parent ?: return
+                    if (parent.childCount > 0) {
+                        if (!actionRecord.uploadAction) {
+                            actionRecord.uploadAction = true
+                            Thread.sleep(3000L)
+                            LogEx.d(LogEx.TAG_WATCH, "in to record new")
+                            InspectorUtils.doClickActionDelay(parent)
+
+                        }
+                    }
 
                 }
             }
-
         }
     }
 
