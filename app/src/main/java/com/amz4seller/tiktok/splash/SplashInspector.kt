@@ -62,7 +62,7 @@ class SplashInspector: AbstractInspector() {
                     val tabHome = home[i]?:return
                     val tabItem = tabHome.parent?:return
                     val tabItemParent = tabItem.parent?:return
-                    InspectorUtils.showAllElement(tabItemParent)
+                    //InspectorUtils.showAllElement(tabItemParent)
                     if(tabItemParent.childCount > 4){
                         val menu = tabItemParent.getChild(4)?:return
                         val pushing = pushingNodes != null &&  pushingNodes.size > 0

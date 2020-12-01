@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 
 class DownloadService : JobIntentService() {
-    var baseUrl = "http://10.12.1.95:8080/"
+    var baseUrl = "http://10.12.1.58:8080/"
     var id = ""
     private var service: ApiService
     private var retrofit: Retrofit
@@ -98,7 +98,7 @@ class DownloadService : JobIntentService() {
                         downLoad(bean.content!!.id)
                     }
                 }
-                Thread.sleep(1000L * 60 * 3)
+                Thread.sleep(1000L * 30)
             }catch (e:Exception){
                 e.printStackTrace()
                 LogEx.d(TAG_WATCH, "get task message request error")
