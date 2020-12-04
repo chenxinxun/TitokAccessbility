@@ -8,23 +8,11 @@ import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.RxBus
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SplashInspector: AbstractInspector() {
     private var wakeUpAction :AtomicBoolean = AtomicBoolean(false)
-    /**
-     * 保持前台操作
-     * */
-    private val watchDogScope = CoroutineScope(Dispatchers.Default).launch {
-        while (true){
-            delay(10 * 60 * 1000L)
-            wakeUpAction.set(true)
-        }
-    }
+
     private var downLoadDisposable: Disposable =
         RxBus.listen(BusEvent.EventDownLoadFinish::class.java).subscribe {
             LogEx.d(LogEx.TAG_WATCH, "home page receive down load finish event")
@@ -62,7 +50,7 @@ class SplashInspector: AbstractInspector() {
                     val tabHome = home[i]?:return
                     val tabItem = tabHome.parent?:return
                     val tabItemParent = tabItem.parent?:return
-                    InspectorUtils.showAllElement(tabItemParent)
+                    //InspectorUtils.showAllElement(tabItemParent)
                     if(tabItemParent.childCount > 4){
                         val menu = tabItemParent.getChild(4)?:return
                         val pushing = pushingNodes != null &&  pushingNodes.size > 0

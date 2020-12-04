@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 
 class DownloadService : JobIntentService() {
-    var baseUrl = "http://10.12.1.95:8080/"
+    var baseUrl = "http://10.12.1.58:8080/"
     var id = ""
     private var service: ApiService
     private var retrofit: Retrofit
@@ -52,7 +52,7 @@ class DownloadService : JobIntentService() {
     }
 
     companion object {
-        private val jobId = 10001
+        private const val jobId = 10001
 
         fun enqueueWork(context: Context, work: Intent) {
             enqueueWork(context, DownloadService::class.java, jobId, work)
@@ -72,7 +72,10 @@ class DownloadService : JobIntentService() {
                 val result =  service.getIdentify()
                 val response = result.execute()
                 val body = response.body()?:return
-                id = body.content
+                if(body.status == 1){
+                    id = body.content
+                }
+
             }
         } catch (e:Exception){
             e.printStackTrace()
@@ -98,7 +101,7 @@ class DownloadService : JobIntentService() {
                         downLoad(bean.content!!.id)
                     }
                 }
-                Thread.sleep(1000L * 60 * 3)
+                Thread.sleep(1000L * 30)
             }catch (e:Exception){
                 e.printStackTrace()
                 LogEx.d(TAG_WATCH, "get task message request error")
@@ -134,8 +137,8 @@ class DownloadService : JobIntentService() {
 
                 //这个打开了输出流  直接保存视频
                 contentResolver.openOutputStream(insert).use { outputStream ->
-                    val url = URL(url)
-                    val connection = url.openConnection()
+                    val videoUrl = URL(url)
+                    val connection = videoUrl.openConnection()
                     connection.connect()
                     val input: InputStream = BufferedInputStream(connection.getInputStream())
                     val buffer = ByteArray(4096)
