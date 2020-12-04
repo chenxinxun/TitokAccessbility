@@ -2,8 +2,24 @@ package com.amz4seller.tiktok
 
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object InspectorUtils {
+    private val okHttpClient = OkHttpClient.Builder()
+    init {
+
+        okHttpClient.connectTimeout(30, TimeUnit.SECONDS)
+        okHttpClient.readTimeout(30, TimeUnit.SECONDS)
+        okHttpClient.writeTimeout(30, TimeUnit.SECONDS)
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        okHttpClient.addInterceptor(logging)
+
+    }
 
     fun getNumberFromFormat(num:String):Int?{
         if(num.contains("M")){
@@ -51,6 +67,15 @@ object InspectorUtils {
         Thread.sleep(InspectorSettings.delayAction)
         node.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
         Thread.sleep(1000L)
+    }
+
+    fun getRetrofit(): Retrofit {
+        val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
+        return Retrofit.Builder()
+            .client(okHttpClient.build())
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
     fun showAllElement(node: AccessibilityNodeInfo){

@@ -1,8 +1,13 @@
 package com.amz4seller.tiktok
 
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 object InspectorSettings {
+
+
     var SPLASH_ACTIVITY = "com.ss.android.ugc.aweme.splash.SplashActivity"
     var RECORD_NEW_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.ui.VideoRecordNewActivity"
     var MV_CHOOSE_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.mvtemplate.choosemedia.MvChoosePhotoActivity"
@@ -36,6 +41,8 @@ object InspectorSettings {
 
     var defaultMinuteLimit = 30
     var minuteLimit =  30
+
+    var HOST_IP = "10.12.1.58"
 
     var homeState : AtomicBoolean = AtomicBoolean(false)
     fun getDelaySecond():Int {

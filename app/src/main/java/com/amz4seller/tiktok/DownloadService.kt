@@ -26,24 +26,7 @@ import java.util.concurrent.TimeUnit
 class DownloadService : JobIntentService() {
     var baseUrl = "http://10.12.1.58:8080/"
     var id = ""
-    private var service: ApiService
-    private var retrofit: Retrofit
-    init {
-        val okHttpClient = OkHttpClient.Builder()
-        okHttpClient.connectTimeout(30, TimeUnit.SECONDS)
-        okHttpClient.readTimeout(30, TimeUnit.SECONDS)
-        okHttpClient.writeTimeout(30, TimeUnit.SECONDS)
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        okHttpClient.addInterceptor(logging)
 
-        retrofit = Retrofit.Builder()
-            .client(okHttpClient.build())
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        service = retrofit.create(ApiService::class.java)
-    }
 
     private fun downLoad(id: Int){
         val url = baseUrl + "tiktok/download?videoId=${id}"
@@ -67,6 +50,8 @@ class DownloadService : JobIntentService() {
          *  1.Android 8.1 开始需要配置 网络安全请求域名加入 如果是采用的内网ip地址 每次换ip需要重新将这个ip地址添加到配置 识别为白名单 通过清除改配只
          *  2.内网局域网访问，如果当前本地机子有挂代理需要将代理不再代理这个网络
          */
+        val retrofit = InspectorUtils.getRetrofit()
+        val service = retrofit.create(ApiService::class.java)
         try{
             if(TextUtils.isEmpty(id)){
                 val result =  service.getIdentify()
