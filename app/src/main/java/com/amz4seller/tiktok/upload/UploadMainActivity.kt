@@ -20,7 +20,7 @@ class UploadMainActivity : AppCompatActivity() {
 
 
         action_save.setOnClickListener {
-            Toast.makeText(this, "保存启动前确定应用后台服务已停，应用已经停止", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "保存启动前确定应用后台服务已停，应用已经停止,否则将设置无效", Toast.LENGTH_SHORT).show()
             val delayTime = delay.text?.trim().toString()
             if(TextUtils.isEmpty(delayTime)){
                 InspectorSettings.delayAction = InspectorSettings.defaultDelayAction

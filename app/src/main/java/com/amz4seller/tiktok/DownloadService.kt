@@ -89,6 +89,7 @@ class DownloadService : JobIntentService() {
                 Thread.sleep(1000L * 30)
             }catch (e:Exception){
                 e.printStackTrace()
+                Thread.sleep(1000L * 30)
                 LogEx.d(TAG_WATCH, "get task message request error")
             }
 

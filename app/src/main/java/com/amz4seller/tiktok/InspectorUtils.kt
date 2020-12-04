@@ -2,6 +2,7 @@ package com.amz4seller.tiktok
 
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
+import com.amz4seller.tiktok.utils.LogEx
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

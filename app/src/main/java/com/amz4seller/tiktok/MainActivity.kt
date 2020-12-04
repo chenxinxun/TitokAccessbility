@@ -1,6 +1,5 @@
 package com.amz4seller.tiktok
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
@@ -18,12 +17,7 @@ class MainActivity : AppCompatActivity() {
         LogEx.watchVideoVisible = true
         checkReadWritePermission()
 
-        service_switch.setOnCheckedChangeListener { _, isChecked ->
-            InspectorSettings.isServiceOn = isChecked
-            if(isChecked){
-                DownloadService.enqueueWork(this, Intent())
-            }
-        }
+
 
         service_upload.setOnCheckedChangeListener { _, isChecked ->
             InspectorSettings.isUpload = isChecked

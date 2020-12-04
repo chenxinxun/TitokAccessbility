@@ -60,11 +60,12 @@
             android:id="@+id/ip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="@dimen/min_width"
+            android:minWidth="200dp"
             android:layout_marginStart="8dp"
             android:textSize="@dimen/common_left"
             android:inputType="number"
             android:digits="0123456789."
+
             android:padding="@dimen/common_padding"
             app:layout_constraintStart_toEndOf="@+id/delay_title"
             app:layout_constraintTop_toTopOf="@+id/delay_title"
