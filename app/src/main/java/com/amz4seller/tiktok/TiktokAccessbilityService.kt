@@ -46,23 +46,21 @@ class TiktokAccessbilityService: AccessibilityService() {
         }
 
         val currentWindow = rootInActiveWindow?:return
-        if(InspectorSettings.isUpload){
-            LogEx.d(TAG_WATCH_DOG, "init upload mode")
-            val name = event?.className.toString()
-            val homeNodes = currentWindow.findAccessibilityNodeInfosByText("Home")
-            val meNodes = currentWindow.findAccessibilityNodeInfosByText("Me")
-            splashInspector.isMatchPage = homeNodes != null && homeNodes.size > 0 && meNodes!=null && meNodes.size > 0
-            if(splashInspector.isMatchPage){
-                splashInspector.resolveLayout(currentWindow)
-            }
-
-            recordNewInspector.resolve(currentWindow, name)
-            mvChoosePhotoInspector.resolve(currentWindow, name)
-        } else {
-            //解析过滤
-            blogger.resolveLayout(currentWindow)
-            followerList.resolveLayout(currentWindow)
+        //上传视频
+        LogEx.d(TAG_WATCH_DOG, "init upload mode")
+        val name = event?.className.toString()
+        val homeNodes = currentWindow.findAccessibilityNodeInfosByText("Home")
+        val meNodes = currentWindow.findAccessibilityNodeInfosByText("Me")
+        splashInspector.isMatchPage = homeNodes != null && homeNodes.size > 0 && meNodes!=null && meNodes.size > 0
+        if(splashInspector.isMatchPage){
+            splashInspector.resolveLayout(currentWindow)
         }
+
+        recordNewInspector.resolve(currentWindow, name)
+        mvChoosePhotoInspector.resolve(currentWindow, name)
+        /*  //解析过滤跟踪过滤大v
+           blogger.resolveLayout(currentWindow)
+           followerList.resolveLayout(currentWindow)*/
 
         currentWindow.recycle()
     }

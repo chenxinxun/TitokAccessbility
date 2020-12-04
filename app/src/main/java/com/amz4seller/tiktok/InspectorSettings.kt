@@ -31,8 +31,8 @@ object InspectorSettings {
     var isUpload = false
 
     //延时操作
-    var defaultDelayAction = 2000L
-    var delayAction = 2000L
+    var defaultDelayAction = 5000L
+    var delayAction = 5000L
 
     var defaultMinuteLimit = 30
     var minuteLimit =  30
