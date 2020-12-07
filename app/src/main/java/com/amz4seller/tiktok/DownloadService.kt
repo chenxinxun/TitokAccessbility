@@ -13,22 +13,17 @@ import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH
 import com.amz4seller.tiktok.utils.RxBus
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URL
-import java.util.concurrent.TimeUnit
 
 
 class DownloadService : JobIntentService() {
-    var baseUrl = "http://10.12.1.58:8080/"
     var id = ""
 
 
     private fun downLoad(id: Int){
+        val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
         val url = baseUrl + "tiktok/download?videoId=${id}"
         LogEx.d(TAG_WATCH, "begin to down $url")
         handleActionDownLoad(url)

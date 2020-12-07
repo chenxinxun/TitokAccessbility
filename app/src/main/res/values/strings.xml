@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tiktok辅助</string>
-    <string name="accessibility_service_description">Tiktok accessbility service</string>
-    <string name="accessibility_service_label">Tiktok acessbility service</string>
+    <string name="app_name">Tiktok辅助自动上传视频</string>
+    <string name="accessibility_service_description">Tiktok 自动视频上传服务</string>
+    <string name="accessibility_service_label">Tiktok自动视频上传服务</string>
 </resources>
