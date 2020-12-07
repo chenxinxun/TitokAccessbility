@@ -28,9 +28,7 @@ class TiktokAccessbilityService: AccessibilityService() {
      * TYPE_VIEW_SCROLLED 4096
      */
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if(!InspectorSettings.isServiceOn){
-            return
-        }
+
 
         val currentWindow = rootInActiveWindow?:return
         //上传视频
