@@ -7,31 +7,18 @@ import com.amz4seller.tiktok.newrecord.RecordNewInspector
 import com.amz4seller.tiktok.splash.SplashInspector
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH_DOG
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class TiktokAccessbilityService: AccessibilityService() {
-    private lateinit var blogger :BloggerInspector
-    private lateinit var followerList : FollowerListInspector
     private lateinit var splashInspector: SplashInspector
     private lateinit var recordNewInspector: RecordNewInspector
     private lateinit var mvChoosePhotoInspector: MvChoosePhotoInspector
-    //协程作用 Default 为新
-    private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
-        blogger = BloggerInspector()
         splashInspector = SplashInspector()
         recordNewInspector = RecordNewInspector()
         mvChoosePhotoInspector = MvChoosePhotoInspector()
-        scope.launch {
-            blogger.startWatchDog()
-        }
 
-        followerList = FollowerListInspector()
-        followerList.blogger = blogger
     }
 
     /**
@@ -58,9 +45,6 @@ class TiktokAccessbilityService: AccessibilityService() {
 
         recordNewInspector.resolve(currentWindow, name)
         mvChoosePhotoInspector.resolve(currentWindow, name)
-        /*  //解析过滤跟踪过滤大v
-           blogger.resolveLayout(currentWindow)
-           followerList.resolveLayout(currentWindow)*/
 
         currentWindow.recycle()
     }
