@@ -3,8 +3,8 @@ package com.amz4seller.tiktok.utils
 import android.util.Log
 
 object LogEx {
-    var watchDogVisible = false
-    var watchVideoVisible  = false
+    var watchDogVisible = true
+    var watchVideoVisible  = true
     const val TAG_WATCH_DOG = "watchDog"
     const val TAG_WATCH = "watchVideo"
     fun d(tag:String, msg:String){

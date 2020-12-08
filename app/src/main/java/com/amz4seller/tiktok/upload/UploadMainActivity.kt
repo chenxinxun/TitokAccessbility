@@ -5,16 +5,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
-import com.amz4seller.tiktok.DownloadService
+import androidx.lifecycle.ViewModelProvider
+import com.amz4seller.UploadService
 import com.amz4seller.tiktok.InspectorSettings
 import com.amz4seller.tiktok.R
 import kotlinx.android.synthetic.main.layout_upload_main.*
 import kotlinx.android.synthetic.main.layout_upload_main.delay
 
 class UploadMainActivity : AppCompatActivity() {
+    private lateinit var viewModel: DeviceIdViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_upload_main)
+        viewModel = ViewModelProvider.NewInstanceFactory().create(DeviceIdViewModel::class.java)
+        viewModel.getDeviceId()
+        viewModel.deviceId.observe(this,{
+            device_id.text = it?:"获取DeviceId 失败无法进行后续操作"
+        })
         ip.setText(InspectorSettings.HOST_IP)
         delay.setText(InspectorSettings.getDelaySecond().toString())
 
@@ -33,7 +41,9 @@ class UploadMainActivity : AppCompatActivity() {
             if(!TextUtils.isEmpty(ipValue)){
                 InspectorSettings.HOST_IP = ipValue
             }
-            DownloadService.enqueueWork(this, Intent())
+            stopService(Intent(this, UploadService::class.java))
+            startService(Intent(this, UploadService::class.java))
+
         }
 
     }

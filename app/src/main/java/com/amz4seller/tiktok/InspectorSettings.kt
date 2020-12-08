@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object InspectorSettings {
 
-
+    var deviceId = ""
     var SPLASH_ACTIVITY = "com.ss.android.ugc.aweme.splash.SplashActivity"
     var RECORD_NEW_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.ui.VideoRecordNewActivity"
     var MV_CHOOSE_ACTIVITY = "com.ss.android.ugc.aweme.shortvideo.mvtemplate.choosemedia.MvChoosePhotoActivity"

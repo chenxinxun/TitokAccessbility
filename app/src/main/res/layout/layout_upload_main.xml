@@ -46,16 +46,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_left"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/ip_title"
-            app:layout_constraintTop_toBottomOf="@+id/split_line"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="服务器IP地址"
             android:textSize="@dimen/common_left"
-            android:text="搜索操作延时"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/split_line" />
         <EditText
             android:id="@+id/ip"
             android:layout_width="wrap_content"
@@ -73,12 +73,33 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/id_h"
+        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/common_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_left"
+        android:text="设备ID"/>
+    <TextView
+        android:id="@+id/device_id"
+        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintStart_toEndOf="@+id/id_h"
+        android:layout_marginTop="@dimen/common_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_left"
+        android:textSize="@dimen/common_left"
+        android:textColor="#3CB371"
+        android:textStyle="bold"
+        android:text="-"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/action_save"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/common_left"
-        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintTop_toBottomOf="@+id/id_h"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="保存配置并开始"/>

@@ -1,45 +1,46 @@
-package com.amz4seller.tiktok
+package com.amz4seller
 
+import android.app.Service
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Environment
+import android.os.IBinder
 import android.provider.MediaStore
 import android.text.TextUtils
-import androidx.core.app.JobIntentService
+import com.amz4seller.tiktok.InspectorSettings
+import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.ApiService
 import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
-import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH
 import com.amz4seller.tiktok.utils.RxBus
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URL
 
-
-class DownloadService : JobIntentService() {
-    var id = ""
-
-
-    private fun downLoad(id: Int){
-        val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
-        val url = baseUrl + "tiktok/download?videoId=${id}"
-        LogEx.d(TAG_WATCH, "begin to down $url")
-        handleActionDownLoad(url)
+class UploadService : Service() {
+    var isBreakLoop = false
+    override fun onCreate() {
+        super.onCreate()
+        LogEx.d(LogEx.TAG_WATCH, "create upload service")
     }
 
-    companion object {
-        private const val jobId = 10001
-
-        fun enqueueWork(context: Context, work: Intent) {
-            enqueueWork(context, DownloadService::class.java, jobId, work)
-        }
-
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        LogEx.d(LogEx.TAG_WATCH, "start upload service")
+        onHandleWork()
+        return super.onStartCommand(intent, flags, startId)
     }
 
 
-    override fun onHandleWork(intent: Intent) {
+    override fun stopService(name: Intent?): Boolean {
+        isBreakLoop = true
+        LogEx.d(LogEx.TAG_WATCH, "stop upload service")
+        return super.stopService(name)
+    }
+
+    private fun onHandleWork() {
         /**
          *  warning
          *  1.Android 8.1 开始需要配置 网络安全请求域名加入 如果是采用的内网ip地址 每次换ip需要重新将这个ip地址添加到配置 识别为白名单 通过清除改配只
@@ -47,49 +48,44 @@ class DownloadService : JobIntentService() {
          */
         val retrofit = InspectorUtils.getRetrofit()
         val service = retrofit.create(ApiService::class.java)
-        try{
-            if(TextUtils.isEmpty(id)){
-                val result =  service.getIdentify()
-                val response = result.execute()
-                val body = response.body()?:return
-                if(body.status == 1){
-                    id = body.content
-                }
+        CoroutineScope(Dispatchers.Default).launch {
+            while (!isBreakLoop){
+                try{
+                    if(!TextUtils.isEmpty(InspectorSettings.deviceId)){
+                        val result =  service.getPublishUrl(InspectorSettings.deviceId)
+                        val response = result.execute()?: return@launch
 
-            }
-        } catch (e:Exception){
-            e.printStackTrace()
-            LogEx.d(TAG_WATCH, "begin get device id request error")
-        }
-
-
-
-        while (true){
-            try{
-                if(TextUtils.isEmpty(id)){
-                    continue
-                }
-                val result =  service.getPublishUrl(id)
-                val response = result.execute()
-                val bean = response.body()?:return
-                //下载视频组，每次任务只下载一次
-                if(bean.status == 1){
-                    if (bean.content == null){
-                        //test manual 手动执行任务
-                        //downLoad(3)
-                    } else {
-                        downLoad(bean.content!!.id)
+                        val body = response.body()?: return@launch
+                        //下载视频组，每次任务只下载一次
+                        if(body.status == 1){
+                            if (body.content == null){
+                                //test manual 手动执行任务
+                                //downLoad(3)
+                            } else {
+                                downLoad(body.content!!.id)
+                            }
+                        }
+                        delay(1000L * 30)
                     }
+
+                }catch (e:Exception){
+                    e.printStackTrace()
+                    delay(1000L * 30)
+                    LogEx.d(LogEx.TAG_WATCH, "get task message request error")
                 }
-                Thread.sleep(1000L * 30)
-            }catch (e:Exception){
-                e.printStackTrace()
-                Thread.sleep(1000L * 30)
-                LogEx.d(TAG_WATCH, "get task message request error")
+
             }
 
         }
 
+
+    }
+
+    private fun downLoad(id: Int){
+        val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
+        val url = baseUrl + "tiktok/download?videoId=${id}"
+        LogEx.d(LogEx.TAG_WATCH, "begin to down $url")
+        handleActionDownLoad(url)
     }
 
     /**
@@ -102,7 +98,7 @@ class DownloadService : JobIntentService() {
             val photoPath = Environment.DIRECTORY_DCIM + "/Camera"
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-               // put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+                // put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
                 put(MediaStore.MediaColumns.RELATIVE_PATH, photoPath)//保存路径
                 /**
                  * Warnning 参数加上导致文件虽然保存了，但是没法被其他应用识别。可以查看 IS_PENDING 是否代表是持续上传的文件
@@ -130,12 +126,11 @@ class DownloadService : JobIntentService() {
                     outputStream?.flush()
                     outputStream?.close()
                     input.close()
-
                 }
                 contentValues.clear()
-                LogEx.d(TAG_WATCH, "down $url finish and send down load finish event")
+                LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
                 RxBus.send(BusEvent.EventDownLoadFinish())
-               // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
+                // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
             } else {
 
             }
@@ -143,8 +138,19 @@ class DownloadService : JobIntentService() {
 
         }catch (e: Exception){
             e.printStackTrace()
-            LogEx.d(TAG_WATCH, "down $url error")
+            LogEx.d(LogEx.TAG_WATCH, "down $url error")
         } finally {
         }
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isBreakLoop = true
+        LogEx.d(LogEx.TAG_WATCH, "create upload service")
     }
 }
