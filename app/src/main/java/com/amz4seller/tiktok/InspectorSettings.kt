@@ -1,6 +1,7 @@
 package com.amz4seller.tiktok
 
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 object InspectorSettings {
 
@@ -20,7 +21,8 @@ object InspectorSettings {
     var minuteLimit =  30
 
     var HOST_IP = "10.12.1.58"
-
+    var currentVideoId :AtomicInteger= AtomicInteger(-1)
+    var pushing:AtomicBoolean = AtomicBoolean(false)
     var homeState : AtomicBoolean = AtomicBoolean(false)
     fun getDelaySecond():Int {
         return (delayAction / 1000).toInt()

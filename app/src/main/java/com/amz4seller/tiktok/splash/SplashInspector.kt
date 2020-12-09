@@ -1,13 +1,19 @@
 package com.amz4seller.tiktok.splash
 
+import android.text.TextUtils
 import android.view.accessibility.AccessibilityNodeInfo
 import com.amz4seller.tiktok.InspectorSettings
 import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.AbstractInspector
+import com.amz4seller.tiktok.base.ApiService
 import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.RxBus
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SplashInspector: AbstractInspector() {
@@ -51,13 +57,41 @@ class SplashInspector: AbstractInspector() {
                     val tabItem = tabHome.parent?:return
                     val tabItemParent = tabItem.parent?:return
                     //InspectorUtils.showAllElement(tabItemParent)
+
                     if(tabItemParent.childCount > 4){
                         val menu = tabItemParent.getChild(4)?:return
                         val pushing = pushingNodes != null &&  pushingNodes.size > 0
-                        if((!pushing) &&  InspectorSettings.homeState.get()) {
-                            LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
-                            InspectorUtils.doClickActionDelayUpload(menu)
+                        if(pushing){
+                            InspectorSettings.pushing.set(true)
+                        } else {
+                            if(InspectorSettings.pushing.get()){
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    try {
+                                        val retrofit = InspectorUtils.getRetrofit()
+                                        val service = retrofit.create(ApiService::class.java)
+                                        val result = service.setUploadStatus(InspectorSettings.currentVideoId.get(), 1)
+                                        val body = result.body()
+                                        if(TextUtils.isEmpty(body)){
+                                            LogEx.d(LogEx.TAG_WATCH, "report upload success fail")
+                                        } else {
+                                            LogEx.d(LogEx.TAG_WATCH, "report upload success $body")
+                                        }
+
+                                    }catch (e:Exception){
+                                        e.printStackTrace()
+                                        LogEx.d(LogEx.TAG_WATCH, "report request fail")
+                                    } finally {
+                                        InspectorSettings.currentVideoId.set(-1)
+                                        InspectorSettings.pushing.set(false)
+                                    }
+                                }
+                            }
+                            if(InspectorSettings.homeState.get()){
+                                LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
+                                InspectorUtils.doClickActionDelayUpload(menu)
+                            }
                         }
+
                     }
                 }
             }

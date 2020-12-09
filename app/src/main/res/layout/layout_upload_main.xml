@@ -5,7 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".upload.UploadMainActivity">
-
+    <TextView
+        android:id="@+id/tip"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="该功能适配机型Android系统10以上的tiktok"/>
 
     <TextView
         android:id="@+id/delay_title"
@@ -28,7 +33,7 @@
         android:padding="@dimen/common_padding"
         android:background="@drawable/bg_input"
         app:layout_constraintStart_toEndOf="@+id/delay_title"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tip"
         android:layout_marginTop="@dimen/common_left"
         />
     <TextView

@@ -32,7 +32,7 @@ class TiktokAccessbilityService: AccessibilityService() {
 
         val currentWindow = rootInActiveWindow?:return
         //上传视频
-        LogEx.d(TAG_WATCH_DOG, "init upload mode")
+
         val name = event?.className.toString()
         val homeNodes = currentWindow.findAccessibilityNodeInfosByText("Home")
         val meNodes = currentWindow.findAccessibilityNodeInfosByText("Me")

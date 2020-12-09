@@ -41,6 +41,7 @@ class UploadMainActivity : AppCompatActivity() {
             if(!TextUtils.isEmpty(ipValue)){
                 InspectorSettings.HOST_IP = ipValue
             }
+            viewModel.getDeviceId()
             stopService(Intent(this, UploadService::class.java))
             startService(Intent(this, UploadService::class.java))
 

@@ -51,7 +51,8 @@ class UploadService : Service() {
         CoroutineScope(Dispatchers.Default).launch {
             while (!isBreakLoop){
                 try{
-                    if(!TextUtils.isEmpty(InspectorSettings.deviceId)){
+                    //确定是有设备并且没有在发布过程
+                    if(!TextUtils.isEmpty(InspectorSettings.deviceId) && !InspectorSettings.pushing.get()){
                         val result =  service.getPublishUrl(InspectorSettings.deviceId)
                         val response = result.execute()?: return@launch
 
@@ -84,6 +85,7 @@ class UploadService : Service() {
     private fun downLoad(id: Int){
         val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
         val url = baseUrl + "tiktok/download?videoId=${id}"
+        InspectorSettings.currentVideoId.set(id)
         LogEx.d(LogEx.TAG_WATCH, "begin to down $url")
         handleActionDownLoad(url)
     }
@@ -131,15 +133,37 @@ class UploadService : Service() {
                 LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
                 RxBus.send(BusEvent.EventDownLoadFinish())
                 // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
-            } else {
-
             }
 
 
         }catch (e: Exception){
             e.printStackTrace()
             LogEx.d(LogEx.TAG_WATCH, "down $url error")
+            reportDownloadFail()
         } finally {
+        }
+    }
+
+    private fun reportDownloadFail(){
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                val retrofit = InspectorUtils.getRetrofit()
+                val service = retrofit.create(ApiService::class.java)
+                val result = service.setUploadStatus(InspectorSettings.currentVideoId.get(), 1)
+                val body = result.body()
+                if(TextUtils.isEmpty(body)){
+                    LogEx.d(LogEx.TAG_WATCH, "report upload success fail")
+                } else {
+                    LogEx.d(LogEx.TAG_WATCH, "report upload success $body")
+                }
+
+            }catch (e: java.lang.Exception){
+                e.printStackTrace()
+                LogEx.d(LogEx.TAG_WATCH, "report request fail")
+            } finally {
+                InspectorSettings.currentVideoId.set(-1)
+                InspectorSettings.pushing.set(false)
+            }
         }
     }
 
