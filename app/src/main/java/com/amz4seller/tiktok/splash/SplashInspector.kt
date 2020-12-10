@@ -71,7 +71,7 @@ class SplashInspector: AbstractInspector() {
                                         val service = retrofit.create(ApiService::class.java)
                                         val result = service.setUploadStatus(InspectorSettings.currentVideoId.get(), 1)
                                         val body = result.body()
-                                        if(TextUtils.isEmpty(body)){
+                                        if(body == null){
                                             LogEx.d(LogEx.TAG_WATCH, "report upload success fail")
                                         } else {
                                             LogEx.d(LogEx.TAG_WATCH, "report upload success $body")

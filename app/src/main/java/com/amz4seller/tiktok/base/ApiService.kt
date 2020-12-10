@@ -16,5 +16,5 @@ interface ApiService {
     fun getPublishUrl(@Query ("deviceId") deviceId:String): Call<UploadBean>
 
     @PUT("/tiktok/task/{videoId}/{status}")
-    suspend fun setUploadStatus(@Path("videoId") videoId:Int, @Path("status")status:Int):Response<String>
+    suspend fun setUploadStatus(@Path("videoId") videoId:Int, @Path("status")status:Int):Response<Any>
 }

@@ -85,16 +85,15 @@ class UploadService : Service() {
     private fun downLoad(id: Int){
         val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
         val url = baseUrl + "tiktok/download?videoId=${id}"
-        InspectorSettings.currentVideoId.set(id)
         LogEx.d(LogEx.TAG_WATCH, "begin to down $url")
-        handleActionDownLoad(url)
+        handleActionDownLoad(url, id)
     }
 
     /**
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private fun handleActionDownLoad(url: String) {
+    private fun handleActionDownLoad(url: String, videoId:Int) {
         try {
             val name = System.currentTimeMillis()
             val photoPath = Environment.DIRECTORY_DCIM + "/Camera"
@@ -131,6 +130,7 @@ class UploadService : Service() {
                 }
                 contentValues.clear()
                 LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
+                InspectorSettings.currentVideoId.set(videoId)
                 RxBus.send(BusEvent.EventDownLoadFinish())
                 // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
             }
@@ -149,9 +149,9 @@ class UploadService : Service() {
             try {
                 val retrofit = InspectorUtils.getRetrofit()
                 val service = retrofit.create(ApiService::class.java)
-                val result = service.setUploadStatus(InspectorSettings.currentVideoId.get(), 1)
+                val result = service.setUploadStatus(InspectorSettings.currentVideoId.get(), 0)
                 val body = result.body()
-                if(TextUtils.isEmpty(body)){
+                if(body == null){
                     LogEx.d(LogEx.TAG_WATCH, "report upload success fail")
                 } else {
                     LogEx.d(LogEx.TAG_WATCH, "report upload success $body")
