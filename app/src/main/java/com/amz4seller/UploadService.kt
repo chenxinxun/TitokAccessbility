@@ -14,7 +14,6 @@ import com.amz4seller.tiktok.base.ApiService
 import com.amz4seller.tiktok.utils.BusEvent
 import com.amz4seller.tiktok.utils.LogEx
 import com.amz4seller.tiktok.utils.RxBus
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.InputStream
