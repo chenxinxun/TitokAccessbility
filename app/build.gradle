@@ -21,8 +21,8 @@ android {
         applicationId "com.amz4seller.titokaccessbility"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 4
-        versionName "1.3"
+        versionCode 5
+        versionName "1.4"
         setProperty("archivesBaseName", "tiktok_upload_$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
