@@ -1,14 +1,13 @@
-package com.amz4seller.tiktok.splash
+package com.origin.sendfix.splash
 
-import android.text.TextUtils
 import android.view.accessibility.AccessibilityNodeInfo
-import com.amz4seller.tiktok.InspectorSettings
-import com.amz4seller.tiktok.InspectorUtils
-import com.amz4seller.tiktok.base.AbstractInspector
-import com.amz4seller.tiktok.base.ApiService
-import com.amz4seller.tiktok.utils.BusEvent
-import com.amz4seller.tiktok.utils.LogEx
-import com.amz4seller.tiktok.utils.RxBus
+import com.origin.sendfix.InspectorSettings
+import com.origin.sendfix.InspectorUtils
+import com.origin.sendfix.base.AbstractInspector
+import com.origin.sendfix.base.ApiService
+import com.origin.sendfix.utils.BusEvent
+import com.origin.sendfix.utils.LogEx
+import com.origin.sendfix.utils.RxBus
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

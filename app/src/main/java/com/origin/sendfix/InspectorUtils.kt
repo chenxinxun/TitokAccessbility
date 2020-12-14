@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok
+package com.origin.sendfix
 
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo

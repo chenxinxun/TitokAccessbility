@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok.utils
+package com.origin.sendfix.utils
 
 import android.util.Log
 

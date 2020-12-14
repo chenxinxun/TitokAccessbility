@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok.utils
+package com.origin.sendfix.utils
 
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject

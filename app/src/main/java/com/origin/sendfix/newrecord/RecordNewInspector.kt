@@ -1,10 +1,10 @@
-package com.amz4seller.tiktok.newrecord
+package com.origin.sendfix.newrecord
 
 import android.view.accessibility.AccessibilityNodeInfo
-import com.amz4seller.tiktok.InspectorSettings
-import com.amz4seller.tiktok.InspectorUtils
-import com.amz4seller.tiktok.base.AbstractInspector
-import com.amz4seller.tiktok.utils.LogEx
+import com.origin.sendfix.InspectorSettings
+import com.origin.sendfix.InspectorUtils
+import com.origin.sendfix.base.AbstractInspector
+import com.origin.sendfix.utils.LogEx
 
 class RecordNewInspector: AbstractInspector() {
     private var actionRecord= ActionRecord()

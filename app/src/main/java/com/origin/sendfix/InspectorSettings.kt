@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok
+package com.origin.sendfix
 
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger

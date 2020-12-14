@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amz4seller.tiktok">
+    package="com.origin.sendfix">
 
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,11 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TitokAccessbility">
         <service
-            android:name="com.amz4seller.UploadService"
+            android:name="com.origin.UploadService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".TiktokAccessbilityService"
+            android:name="com.origin.sendfix.OriginSendFixService"
             android:label="@string/accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <meta-data
@@ -35,7 +35,7 @@
         </service>
 
         <activity
-            android:name=".upload.UploadMainActivity"
+            android:name="com.origin.sendfix.upload.UploadMainActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,14 +1,12 @@
-package com.amz4seller.tiktok
+package com.origin.sendfix
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.amz4seller.tiktok.mv.MvChoosePhotoInspector
-import com.amz4seller.tiktok.newrecord.RecordNewInspector
-import com.amz4seller.tiktok.splash.SplashInspector
-import com.amz4seller.tiktok.utils.LogEx
-import com.amz4seller.tiktok.utils.LogEx.TAG_WATCH_DOG
+import com.origin.sendfix.mv.MvChoosePhotoInspector
+import com.origin.sendfix.newrecord.RecordNewInspector
+import com.origin.sendfix.splash.SplashInspector
 
-class TiktokAccessbilityService: AccessibilityService() {
+class OriginSendFixService: AccessibilityService() {
     private lateinit var splashInspector: SplashInspector
     private lateinit var recordNewInspector: RecordNewInspector
     private lateinit var mvChoosePhotoInspector: MvChoosePhotoInspector

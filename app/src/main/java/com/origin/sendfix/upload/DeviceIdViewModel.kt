@@ -1,13 +1,13 @@
-package com.amz4seller.tiktok.upload
+package com.origin.sendfix.upload
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amz4seller.tiktok.InspectorSettings
-import com.amz4seller.tiktok.InspectorUtils
-import com.amz4seller.tiktok.base.ApiService
-import com.amz4seller.tiktok.utils.LogEx
+import com.origin.sendfix.InspectorSettings
+import com.origin.sendfix.InspectorUtils
+import com.origin.sendfix.base.ApiService
+import com.origin.sendfix.utils.LogEx
 import kotlinx.coroutines.launch
 import java.net.NetworkInterface
 import java.util.*

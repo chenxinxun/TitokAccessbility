@@ -1,12 +1,12 @@
-package com.amz4seller.tiktok.mv
+package com.origin.sendfix.mv
 
 import android.view.accessibility.AccessibilityNodeInfo
-import com.amz4seller.tiktok.InspectorSettings
-import com.amz4seller.tiktok.InspectorSettings.VIDEO_EDIT_ACTIVITY
-import com.amz4seller.tiktok.InspectorSettings.VIDEO_PUBLISH_ACTIVITY
-import com.amz4seller.tiktok.InspectorUtils
-import com.amz4seller.tiktok.base.AbstractInspector
-import com.amz4seller.tiktok.utils.LogEx
+import com.origin.sendfix.InspectorSettings
+import com.origin.sendfix.InspectorSettings.VIDEO_EDIT_ACTIVITY
+import com.origin.sendfix.InspectorSettings.VIDEO_PUBLISH_ACTIVITY
+import com.origin.sendfix.InspectorUtils
+import com.origin.sendfix.base.AbstractInspector
+import com.origin.sendfix.utils.LogEx
 
 class MvChoosePhotoInspector: AbstractInspector() {
     private inner class ActionRecord{

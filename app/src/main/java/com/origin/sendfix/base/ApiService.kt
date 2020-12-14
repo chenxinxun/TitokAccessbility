@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok.base
+package com.origin.sendfix.base
 
 import retrofit2.Call
 import retrofit2.Response

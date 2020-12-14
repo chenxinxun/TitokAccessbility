@@ -1,4 +1,4 @@
-package com.amz4seller
+package com.origin
 
 import android.app.Service
 import android.content.ContentValues
@@ -8,12 +8,12 @@ import android.os.Environment
 import android.os.IBinder
 import android.provider.MediaStore
 import android.text.TextUtils
-import com.amz4seller.tiktok.InspectorSettings
-import com.amz4seller.tiktok.InspectorUtils
-import com.amz4seller.tiktok.base.ApiService
-import com.amz4seller.tiktok.utils.BusEvent
-import com.amz4seller.tiktok.utils.LogEx
-import com.amz4seller.tiktok.utils.RxBus
+import com.origin.sendfix.InspectorSettings
+import com.origin.sendfix.InspectorUtils
+import com.origin.sendfix.base.ApiService
+import com.origin.sendfix.utils.BusEvent
+import com.origin.sendfix.utils.LogEx
+import com.origin.sendfix.utils.RxBus
 import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.InputStream
