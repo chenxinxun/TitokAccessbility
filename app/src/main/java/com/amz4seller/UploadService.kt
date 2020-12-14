@@ -39,6 +39,8 @@ class UploadService : Service() {
         return super.stopService(name)
     }
 
+
+
     private fun onHandleWork() {
         /**
          *  warning
@@ -172,8 +174,8 @@ class UploadService : Service() {
 
 
     override fun onDestroy() {
-        super.onDestroy()
         isBreakLoop = true
-        LogEx.d(LogEx.TAG_WATCH, "create upload service")
+        LogEx.d(LogEx.TAG_WATCH, "destroy upload service")
+        super.onDestroy()
     }
 }

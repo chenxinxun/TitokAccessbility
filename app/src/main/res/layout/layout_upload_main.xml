@@ -7,10 +7,12 @@
     tools:context=".upload.UploadMainActivity">
     <TextView
         android:id="@+id/tip"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="@dimen/common_left"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="该功能适配机型Android系统10以上的tiktok"/>
+        android:text="-"/>
 
     <TextView
         android:id="@+id/delay_title"
@@ -80,32 +82,52 @@
 
     <TextView
         android:id="@+id/id_h"
-        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintTop_toTopOf="@+id/device_id"
+        app:layout_constraintBottom_toBottomOf="@+id/device_id"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/common_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_left"
-        android:text="设备ID"/>
-    <TextView
+        android:text="设备标识"/>
+
+    <EditText
         android:id="@+id/device_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/min_width"
+        android:layout_marginStart="8dp"
+        android:padding="@dimen/common_padding"
+        android:background="@drawable/bg_input"
+        android:textColor="#3CB371"
+        android:textStyle="bold"
+        android:textSize="@dimen/common_left"
+        android:text="publish01"
+        android:layout_marginEnd="@dimen/common_left"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ip_layout"
         app:layout_constraintStart_toEndOf="@+id/id_h"
         android:layout_marginTop="@dimen/common_left"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_stop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/action_save"
+        android:layout_marginTop="@dimen/common_left"
+        app:layout_constraintTop_toBottomOf="@+id/device_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_left"
-        android:textSize="@dimen/common_left"
-        android:textColor="#3CB371"
-        android:textStyle="bold"
-        android:text="-"/>
+        android:backgroundTint="#999999"
+        android:minWidth="150dp"
+        android:text="停止"/>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/action_save"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/action_stop"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/common_left"
-        app:layout_constraintTop_toBottomOf="@+id/id_h"
+        app:layout_constraintTop_toBottomOf="@+id/device_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="保存配置并开始"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("/tiktok/device")
-    suspend fun getIdentifyAsync(): Response<BaseBean>
+    suspend fun getIdentifyAsync(@Query("code") code:String, @Query("mac") mac:String): Response<BaseBean>
 
 
     @GET("/tiktok/publish")

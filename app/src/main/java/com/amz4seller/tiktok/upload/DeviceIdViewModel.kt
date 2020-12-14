@@ -1,6 +1,6 @@
 package com.amz4seller.tiktok.upload
 
-import android.text.TextUtils
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,31 +9,58 @@ import com.amz4seller.tiktok.InspectorUtils
 import com.amz4seller.tiktok.base.ApiService
 import com.amz4seller.tiktok.utils.LogEx
 import kotlinx.coroutines.launch
+import java.net.NetworkInterface
+import java.util.*
+
 
 class DeviceIdViewModel: ViewModel() {
-    var deviceId: MutableLiveData<String> = MutableLiveData()
+    lateinit var context: Context
+    var result: MutableLiveData<String> = MutableLiveData()
     var id:String = ""
-    fun getDeviceId() {
+    fun getDeviceId(deviceId: String) {
         viewModelScope.launch {
             val retrofit = InspectorUtils.getRetrofit()
             val service = retrofit.create(ApiService::class.java)
             try{
-                if(TextUtils.isEmpty(id)){
-                    val body =  service.getIdentifyAsync()
-                    val bean = body.body()?:return@launch
-                    if(bean.status == 1){
-                        id = bean.content
-                        InspectorSettings.deviceId = id
-                        LogEx.d(LogEx.TAG_WATCH, "get device id ${InspectorSettings.deviceId}")
-                        deviceId.value =id
-                    } else {
-                        deviceId.value =""
-                    }
+                val macAddress = getMacAddress()?:"wifi is disabled"
+                val body =  service.getIdentifyAsync(deviceId, macAddress)
+                val bean = body.body()?:return@launch
+                if(bean.status == 1){
+                    id = bean.content
+                    InspectorSettings.deviceId = id
+                    LogEx.d(LogEx.TAG_WATCH, "get device id ${InspectorSettings.deviceId}")
+                    result.value =id
+                } else {
+                    result.value =""
                 }
-            } catch (e:Exception){
+            } catch (e: Exception){
                 e.printStackTrace()
                 LogEx.d(LogEx.TAG_WATCH, "begin get device id request error")
             }
         }
+    }
+
+    private fun getMacAddress(): String? {
+        try {
+            val all: List<NetworkInterface> =
+                Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (nif in all) {
+                if (nif.name != "wlan0") {
+                    continue
+                }
+                val macBytes: ByteArray = nif.hardwareAddress ?: return ""
+                val res1 = StringBuilder()
+                for (b in macBytes) {
+                    res1.append(String.format("%02X:", b))
+                }
+                if (res1.isNotEmpty()) {
+                    res1.deleteCharAt(res1.length - 1)
+                }
+                return res1.toString()
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

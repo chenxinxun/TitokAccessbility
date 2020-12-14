@@ -2,6 +2,7 @@ package com.amz4seller.tiktok.utils
 
 import android.util.Log
 
+
 object LogEx {
     var watchDogVisible = true
     var watchVideoVisible  = true
