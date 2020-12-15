@@ -29,7 +29,7 @@ class UploadService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         LogEx.d(LogEx.TAG_WATCH, "start upload service")
         onHandleWork()
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
 
