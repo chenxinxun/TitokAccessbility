@@ -1,11 +1,15 @@
 package com.origin.sendfix.upload
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,15 +19,23 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.origin.UploadService
 import com.origin.sendfix.BuildConfig
 import com.origin.sendfix.InspectorSettings
 import com.origin.sendfix.R
+import com.origin.sendfix.utils.LogEx
 import kotlinx.android.synthetic.main.layout_upload_main.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedInputStream
 import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 
 
 class UploadMainActivity : AppCompatActivity() {
@@ -65,6 +77,14 @@ class UploadMainActivity : AppCompatActivity() {
         action_stop.setOnClickListener {
             stopService(Intent(this, UploadService::class.java))
             Toast.makeText(this, "停止成功", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                withContext(Dispatchers.Default){
+                    handleActionDownLoad("https://video.kuaishou.com/f/X-7Gcrujj4via26D_A")
+                }
+
+            }
+
+
         }
         action_save.setOnClickListener {
             Toast.makeText(this, "将以新的配置运行", Toast.LENGTH_SHORT).show()
@@ -112,5 +132,59 @@ class UploadMainActivity : AppCompatActivity() {
         return false
     }
 
+    @Suppress("DEPRECATION")
+    private fun handleActionDownLoad(url: String):Boolean{
 
+        try {
+            val name = System.currentTimeMillis()
+            val photoPath = Environment.DIRECTORY_DCIM + "/Camera"
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "video/*")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, photoPath)//保存路径
+                /**
+                 * Warnning 参数加上导致文件虽然保存了，但是没法被其他应用识别。可以查看 IS_PENDING 是否代表是持续上传的文件
+                 */
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //返回出一个URI
+                val insert = contentResolver.insert(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    contentValues
+                ) ?: return false
+
+                //这个打开了输出流  直接保存视频 视频格式要求去验证下
+                contentResolver.openOutputStream(insert).use { outputStream ->
+                    val videoUrl = URL(url)
+                    val connection = videoUrl.openConnection()
+                    connection.connect()
+                    val input: InputStream = BufferedInputStream(connection.getInputStream())
+                    val buffer = ByteArray(4096)
+                    var len: Int
+                    while (input.read(buffer).also { len = it } != -1) {
+                        outputStream?.write(buffer, 0, len)
+                    }
+                    outputStream?.flush()
+                    outputStream?.close()
+                    input.close()
+
+                    contentValues.clear()
+                    LogEx.d(LogEx.TAG_WATCH, "down $url finish")
+                    return true
+                }
+
+                // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
+            } else {
+                return false
+            }
+
+
+        }catch (e: Exception){
+            e.printStackTrace()
+            LogEx.d(LogEx.TAG_WATCH, "down $url error")
+            return false
+        } finally {
+        }
+
+    }
 }
