@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "211599688646",
+    "project_id": "origin-sendfix",
+    "storage_bucket": "origin-sendfix.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211599688646:android:cb87222cb9d838bb02e8c7",
+        "android_client_info": {
+          "package_name": "com.origin.sendfix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211599688646-q27ssg3bbo19gnsbl45c6kmshupsvami.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy4ltDz2zowUbvPkkrGxS66yuFTFiZILc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211599688646-q27ssg3bbo19gnsbl45c6kmshupsvami.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

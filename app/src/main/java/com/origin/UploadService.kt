@@ -14,7 +14,10 @@ import com.origin.sendfix.base.ApiService
 import com.origin.sendfix.utils.BusEvent
 import com.origin.sendfix.utils.LogEx
 import com.origin.sendfix.utils.RxBus
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URL
@@ -70,7 +73,7 @@ class UploadService : Service() {
                         delay(1000L * 30)
                     }
 
-                }catch (e:Exception){
+                }catch (e: Exception){
                     e.printStackTrace()
                     delay(1000L * 30)
                     LogEx.d(LogEx.TAG_WATCH, "get task message request error")
@@ -94,18 +97,18 @@ class UploadService : Service() {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private fun handleActionDownLoad(url: String, videoId:Int) {
+    @Suppress("DEPRECATION")
+    private fun handleActionDownLoad(url: String, videoId: Int) {
         try {
             val name = System.currentTimeMillis()
             val photoPath = Environment.DIRECTORY_DCIM + "/Camera"
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-                // put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+                //put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
                 put(MediaStore.MediaColumns.RELATIVE_PATH, photoPath)//保存路径
                 /**
                  * Warnning 参数加上导致文件虽然保存了，但是没法被其他应用识别。可以查看 IS_PENDING 是否代表是持续上传的文件
                  */
-                // put(MediaStore.MediaColumns.IS_PENDING, true)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 //返回出一个URI
@@ -114,7 +117,7 @@ class UploadService : Service() {
                     contentValues
                 ) ?: return
 
-                //这个打开了输出流  直接保存视频
+                //这个打开了输出流  直接保存视频 视频格式要求去验证下
                 contentResolver.openOutputStream(insert).use { outputStream ->
                     val videoUrl = URL(url)
                     val connection = videoUrl.openConnection()
@@ -128,12 +131,16 @@ class UploadService : Service() {
                     outputStream?.flush()
                     outputStream?.close()
                     input.close()
+
+                    contentValues.clear()
+                    LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
+                    InspectorSettings.currentVideoId.set(videoId)
+                    RxBus.send(BusEvent.EventDownLoadFinish())
                 }
-                contentValues.clear()
-                LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
-                InspectorSettings.currentVideoId.set(videoId)
-                RxBus.send(BusEvent.EventDownLoadFinish())
+
                 // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
+            } else {
+
             }
 
 

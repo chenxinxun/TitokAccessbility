@@ -28,9 +28,7 @@ import java.io.IOException
 
 class UploadMainActivity : AppCompatActivity() {
     private lateinit var viewModel: DeviceIdViewModel
-    companion object {
-        private val DEVICE = preferencesKey<String>("device_id")
-    }
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,25 +112,5 @@ class UploadMainActivity : AppCompatActivity() {
         return false
     }
 
-    fun <T> DataStore<Preferences>.getValueFlow(
-            key: Preferences.Key<T>,
-            defaultValue: T
-    ): Flow<T> {
-        return this.data
-                .catch { exception ->
-                    if (exception is IOException) {
-                        emit(emptyPreferences())
-                    } else {
-                        throw exception
-                    }
-                }.map { preferences ->
-                    preferences[key] ?: defaultValue
-                }
-    }
 
-    suspend fun <T> DataStore<Preferences>.setValue(key: Preferences.Key<T>, value: T) {
-        this.edit { preferences ->
-            preferences[key] = value
-        }
-    }
 }
