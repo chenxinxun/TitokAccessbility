@@ -67,7 +67,15 @@ class UploadService : Service() {
                                 //test manual 手动执行任务
                                 //downLoad(3)
                             } else {
-                                downLoad(body.content!!.id)
+                                val videoId = body.content!!.id
+                                val isVideoOk = downLoad(videoId)
+                                if(isVideoOk){
+                                    delay(1000L * 30)
+                                    //延迟发送上传任务
+                                    InspectorSettings.currentVideoId.set(videoId)
+                                    RxBus.send(BusEvent.EventDownLoadFinish())
+                                }
+
                             }
                         }
                         delay(1000L * 30)
@@ -86,11 +94,11 @@ class UploadService : Service() {
 
     }
 
-    private fun downLoad(id: Int){
+    private fun downLoad(id: Int) :Boolean{
         val baseUrl = "http://${InspectorSettings.HOST_IP}:8080/"
         val url = baseUrl + "tiktok/download?videoId=${id}"
         LogEx.d(LogEx.TAG_WATCH, "begin to down $url")
-        handleActionDownLoad(url, id)
+        return handleActionDownLoad(url)
     }
 
     /**
@@ -98,7 +106,7 @@ class UploadService : Service() {
      * parameters.
      */
     @Suppress("DEPRECATION")
-    private fun handleActionDownLoad(url: String, videoId: Int) {
+    private fun handleActionDownLoad(url: String):Boolean{
         try {
             val name = System.currentTimeMillis()
             val photoPath = Environment.DIRECTORY_DCIM + "/Camera"
@@ -115,7 +123,7 @@ class UploadService : Service() {
                 val insert = contentResolver.insert(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                     contentValues
-                ) ?: return
+                ) ?: return false
 
                 //这个打开了输出流  直接保存视频 视频格式要求去验证下
                 contentResolver.openOutputStream(insert).use { outputStream ->
@@ -133,14 +141,12 @@ class UploadService : Service() {
                     input.close()
 
                     contentValues.clear()
-                    LogEx.d(LogEx.TAG_WATCH, "down $url finish and send down load finish event")
-                    InspectorSettings.currentVideoId.set(videoId)
-                    RxBus.send(BusEvent.EventDownLoadFinish())
+                    return true
                 }
 
                 // contentValues.put(MediaStore.Video.Media.IS_PENDING, 0)
             } else {
-
+                return false
             }
 
 
@@ -148,8 +154,10 @@ class UploadService : Service() {
             e.printStackTrace()
             LogEx.d(LogEx.TAG_WATCH, "down $url error")
             reportDownloadFail()
+            return false
         } finally {
         }
+
     }
 
     private fun reportDownloadFail(){
