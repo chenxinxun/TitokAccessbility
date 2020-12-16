@@ -16,7 +16,10 @@ class OriginSendFixService: AccessibilityService() {
         splashInspector = SplashInspector()
         recordNewInspector = RecordNewInspector()
         mvChoosePhotoInspector = MvChoosePhotoInspector()
+    }
 
+    override fun onServiceConnected() {
+        super.onServiceConnected()
     }
 
     /**

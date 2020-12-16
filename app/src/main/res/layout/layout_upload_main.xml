@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.origin.sendfix.upload.UploadMainActivity">
+    >
     <TextView
         android:id="@+id/tip"
         android:layout_marginTop="12dp"
@@ -13,6 +13,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="-"/>
+
+   <TextView
+       android:id="@+id/h_access_status"
+       app:layout_constraintTop_toTopOf="@+id/access_status"
+       app:layout_constraintStart_toStartOf="parent"
+       android:layout_width="wrap_content"
+       android:layout_marginStart="@dimen/common_left"
+       android:layout_height="wrap_content"
+       android:text="辅助功能开关启动状态："
+       />
+    <TextView
+        android:id="@+id/access_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_left"
+        app:layout_constraintTop_toTopOf="@+id/action_open"
+        app:layout_constraintStart_toEndOf="@+id/h_access_status"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_open"
+        app:layout_constraintStart_toEndOf="@+id/access_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tip"
+        android:layout_marginTop="@dimen/common_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打开辅助功能"/>
 
     <TextView
         android:id="@+id/delay_title"
@@ -35,7 +62,7 @@
         android:padding="@dimen/common_padding"
         android:background="@drawable/bg_input"
         app:layout_constraintStart_toEndOf="@+id/delay_title"
-        app:layout_constraintTop_toBottomOf="@+id/tip"
+        app:layout_constraintTop_toBottomOf="@+id/access_status"
         android:layout_marginTop="@dimen/common_left"
         />
     <TextView
@@ -81,6 +108,34 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/ip_h"
+        app:layout_constraintTop_toTopOf="@+id/ip_address"
+        app:layout_constraintBottom_toBottomOf="@+id/ip_address"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_left"
+        android:text="ip地址"/>
+
+    <TextView
+        android:id="@+id/ip_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/min_width"
+        android:layout_marginStart="8dp"
+        android:padding="@dimen/common_padding"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/common_left"
+        android:text="-"
+        android:layout_marginEnd="@dimen/common_left"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintStart_toEndOf="@+id/ip_h"
+        android:layout_marginTop="@dimen/common_left"
+        />
+
+    <TextView
         android:id="@+id/id_h"
         app:layout_constraintTop_toTopOf="@+id/device_id"
         app:layout_constraintBottom_toBottomOf="@+id/device_id"
@@ -104,7 +159,7 @@
         android:text="publish01"
         android:layout_marginEnd="@dimen/common_left"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ip_layout"
+        app:layout_constraintTop_toBottomOf="@+id/ip_address"
         app:layout_constraintStart_toEndOf="@+id/id_h"
         android:layout_marginTop="@dimen/common_left"
         />
@@ -129,5 +184,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="保存配置并开始"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/upload_log"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/common_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上报日志"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

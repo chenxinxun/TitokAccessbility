@@ -23,8 +23,8 @@ android {
         applicationId "com.origin.sendfix"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 7
-        versionName "1.5.1"
+        versionCode 8
+        versionName "1.5.2"
         setProperty("archivesBaseName", "tiktok_upload_$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,8 @@ android {
         checkReleaseBuilds false
     }
 
+    ndkVersion '16.1.4479499'
+
 }
 
 dependencies {
@@ -74,6 +76,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
+    implementation 'com.dianping.android.sdk:logan:1.2.4'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

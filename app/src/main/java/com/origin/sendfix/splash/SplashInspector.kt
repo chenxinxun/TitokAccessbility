@@ -85,7 +85,9 @@ class SplashInspector: AbstractInspector() {
                                     }
                                 }
                             }
-                            if(InspectorSettings.homeState.get()){
+                            //容易出错点，点击到其他地方
+                            val singlePlusButton = menu.childCount == 0
+                            if(InspectorSettings.homeState.get()  && singlePlusButton){
                                 LogEx.d(LogEx.TAG_WATCH, "begin auto click + ")
                                 InspectorUtils.doClickActionDelayUpload(menu)
                             }

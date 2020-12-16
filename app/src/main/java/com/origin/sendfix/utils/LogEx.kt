@@ -1,6 +1,7 @@
 package com.origin.sendfix.utils
 
 import android.util.Log
+import com.dianping.logan.Logan
 
 
 object LogEx {
@@ -11,10 +12,14 @@ object LogEx {
     fun d(tag:String, msg:String){
         if (watchDogVisible && tag == TAG_WATCH_DOG){
             Log.d(tag, msg)
+            Logan.w(msg, 1)
+            Logan.f()
         }
 
         if(watchVideoVisible && tag == TAG_WATCH){
             Log.d(tag, msg)
+            Logan.w(msg, 1)
+            Logan.f()
         }
     }
 }
