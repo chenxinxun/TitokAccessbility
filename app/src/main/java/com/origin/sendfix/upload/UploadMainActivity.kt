@@ -51,6 +51,11 @@ class UploadMainActivity : AppCompatActivity() {
             "device_id",
             "publish01"
         )?:"publish01"
+
+        val serviceIp = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                "service_ip",
+                InspectorSettings.HOST_IP
+        )?:InspectorSettings.HOST_IP
         viewModel = ViewModelProvider.NewInstanceFactory().create(DeviceIdViewModel::class.java)
         device_id.setText(deviceId)
         initLog()
@@ -78,7 +83,7 @@ class UploadMainActivity : AppCompatActivity() {
         viewModel.result.observe(this, {
 
         })
-        ip.setText(InspectorSettings.HOST_IP)
+        ip.setText(serviceIp)
         delay.setText(InspectorSettings.getDelaySecond().toString())
 
         action_open.setOnClickListener {
@@ -109,6 +114,9 @@ class UploadMainActivity : AppCompatActivity() {
             val ipValue = ip.text.trim().toString()
             if(!TextUtils.isEmpty(ipValue)){
                 InspectorSettings.HOST_IP = ipValue
+                val memes: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this).edit()
+                memes.putString("service_ip", ipValue).apply()
+                memes.commit()
             }
             doGet()
             stopService(Intent(this, UploadService::class.java))

@@ -5,6 +5,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.origin.sendfix.mv.MvChoosePhotoInspector
 import com.origin.sendfix.newrecord.RecordNewInspector
 import com.origin.sendfix.splash.SplashInspector
+import com.origin.sendfix.utils.LogEx
 
 class OriginSendFixService: AccessibilityService() {
     private lateinit var splashInspector: SplashInspector
@@ -20,6 +21,7 @@ class OriginSendFixService: AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        LogEx.d(LogEx.TAG_WATCH, "AccessibilityService connect")
     }
 
     /**
@@ -55,5 +57,6 @@ class OriginSendFixService: AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         splashInspector.doRelease()
+        LogEx.d(LogEx.TAG_WATCH, "AccessibilityService destroy")
     }
 }

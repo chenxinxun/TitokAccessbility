@@ -20,7 +20,7 @@ object InspectorSettings {
     var defaultMinuteLimit = 30
     var minuteLimit =  30
 
-    var HOST_IP = "10.12.1.58"
+    var HOST_IP = "10.12.0.58"
     var currentVideoId :AtomicInteger= AtomicInteger(-1)
     var pushing:AtomicBoolean = AtomicBoolean(false)
     var homeState : AtomicBoolean = AtomicBoolean(false)

@@ -1,4 +1,4 @@
-package com.amz4seller.tiktok
+package com.origin.tiktok
 
 import org.junit.Test
 

@@ -23,8 +23,8 @@ android {
         applicationId "com.origin.sendfix"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 8
-        versionName "1.5.2"
+        versionCode 9
+        versionName "1.5.3"
         setProperty("archivesBaseName", "tiktok_upload_$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
